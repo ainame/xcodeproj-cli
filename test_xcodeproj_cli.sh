@@ -16,8 +16,8 @@ NC='\033[0m' # No Color
 
 # Build the CLI first
 echo -e "${BLUE}Building xcodeproj CLI...${NC}"
-swift build -c release
-CLI_PATH=".build/release/xcodeproj"
+swift build
+CLI_PATH=".build/debug/xcodeproj"
 
 # Clean up any existing test project
 echo -e "${BLUE}Cleaning up previous test project...${NC}"

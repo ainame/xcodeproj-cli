@@ -15,8 +15,8 @@ struct RemoveSwiftPackageCommand: ParsableCommand {
     @Argument(help: "URL of the Swift Package repository to remove")
     var packageURL: String
     
-    @Flag(name: .long, help: "Whether to remove package from all targets (default: true)")
-    var removeFromTargets = true
+    @Flag(name: .long, help: "Skip removing package from targets (by default, package is removed from all targets)")
+    var skipTargets = false
     
     mutating func run() throws {
         do {
@@ -38,8 +38,8 @@ struct RemoveSwiftPackageCommand: ParsableCommand {
             
             let packageRef = project.remotePackages[packageIndex]
             
-            // Remove package product dependencies from all targets if requested
-            if removeFromTargets {
+            // Remove package product dependencies from all targets unless skipped
+            if !skipTargets {
                 for target in xcodeproj.pbxproj.nativeTargets {
                     // Find and remove product dependencies that reference this package
                     if let dependencies = target.packageProductDependencies {
@@ -68,7 +68,7 @@ struct RemoveSwiftPackageCommand: ParsableCommand {
             try xcodeproj.write(path: Path(projectURL.path))
             
             var message = "Successfully removed Swift Package '\(packageURL)' from project"
-            if removeFromTargets {
+            if !skipTargets {
                 message += " and all targets"
             }
             print(message)
