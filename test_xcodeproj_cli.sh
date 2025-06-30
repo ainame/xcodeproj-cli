@@ -79,7 +79,7 @@ echo -e "${BLUE}=== 15. DUPLICATE TARGET ===${NC}"
 run_command "$CLI_PATH duplicate-target TestDemo.xcodeproj TestDemo TestDemo-Staging --new-bundle-identifier com.demo.testapp.staging"
 
 echo -e "${BLUE}=== 16. MOVE FILE ===${NC}"
-run_command "$CLI_PATH move-file TestDemo.xcodeproj TestDemo/NewFile.swift TestDemo/RenamedFile.swift"
+run_command "$CLI_PATH move-file TestDemo.xcodeproj TestDemo/NewFile.swift TestDemo/RenamedFile.swift --move-on-disk"
 
 echo -e "${BLUE}=== 17. ADD BUILD PHASE (Copy Files) ===${NC}"
 echo "Sample config file" > TestDemo/config.plist
