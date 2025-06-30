@@ -1,9 +1,31 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
+import ArgumentParser
 
 @main
-struct xcodeproj_cli {
-    static func main() {
-        print("Hello, world!")
-    }
+struct XcodeprojCLI: ParsableCommand {
+    static let configuration = CommandConfiguration(
+        commandName: "xcodeproj",
+        abstract: "A tool for manipulating Xcode project files",
+        version: "1.0.0",
+        subcommands: [
+            CreateCommand.self,
+            ListTargetsCommand.self,
+            ListBuildConfigurationsCommand.self,
+            ListFilesCommand.self,
+            GetBuildSettingsCommand.self,
+            AddFileCommand.self,
+            RemoveFileCommand.self,
+            MoveFileCommand.self,
+            CreateGroupCommand.self,
+            AddTargetCommand.self,
+            RemoveTargetCommand.self,
+            AddDependencyCommand.self,
+            SetBuildSettingCommand.self,
+            AddFrameworkCommand.self,
+            AddBuildPhaseCommand.self,
+            DuplicateTargetCommand.self,
+            AddSwiftPackageCommand.self,
+            ListSwiftPackagesCommand.self,
+            RemoveSwiftPackageCommand.self
+        ]
+    )
 }
