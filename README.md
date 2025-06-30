@@ -51,44 +51,52 @@ By converting the functionality from an MCP server to a standalone CLI, we get t
 
 ## Installation
 
-### Quick Install (Recommended)
-
-```bash
-# Download and install latest version automatically
-curl -sSL https://raw.githubusercontent.com/ainame/xcodeproj_cli/main/install.sh | bash
-```
-
-### Manual Download
-
-```bash
-# Download latest release
-curl -L -o xcodeproj.tar.gz "https://github.com/ainame/xcodeproj_cli/releases/latest/download/xcodeproj-v0.0.1-macos-universal.tar.gz"
-
-# Extract and install
-tar -xzf xcodeproj.tar.gz
-chmod +x xcodeproj
-sudo mv xcodeproj /usr/local/bin/
-```
-
-### Homebrew (Coming Soon)
-
-```bash
-brew tap ainame/tap
-brew install xcodeproj
-```
-
-### Build from Source
+### Build from Source (Current Method)
 
 ```bash
 git clone https://github.com/ainame/xcodeproj_cli.git
 cd xcodeproj_cli
 swift build -c release
-cp .build/release/xcodeproj /usr/local/bin/
+
+# Option 1: Copy to a directory in your PATH
+cp .build/release/xcodeproj /path/to/your/bin/
+
+# Option 2: Add to PATH in your shell profile
+echo 'export PATH="$PATH:/path/to/xcodeproj_cli/.build/release"' >> ~/.zshrc
+source ~/.zshrc
+
+# Option 3: Create an alias
+echo 'alias xcodeproj="/path/to/xcodeproj_cli/.build/release/xcodeproj"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+### Download Releases (Coming Soon)
+
+Pre-built binaries will be available from GitHub Releases once the first release is published:
+
+```bash
+# Will be available after first release
+curl -L -o xcodeproj.tar.gz "https://github.com/ainame/xcodeproj_cli/releases/latest/download/xcodeproj-v0.0.1-macos-universal.tar.gz"
+tar -xzf xcodeproj.tar.gz
+chmod +x xcodeproj
+
+# Move to your preferred location
+mv xcodeproj /path/to/your/bin/
+# Or run directly: ./xcodeproj --help
+```
+
+### Homebrew (Future)
+
+```bash
+# Planned for future release
+brew tap ainame/tap
+brew install xcodeproj
 ```
 
 ### Requirements
 - macOS 13.0 or later
-- For building from source: Swift 5.7+ and Xcode 14.0+
+- Swift 6.1+ and Xcode 16.0+ (for building from source)
+- Universal binary supports both Apple Silicon and Intel Macs
 
 ## Usage
 

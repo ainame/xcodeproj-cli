@@ -101,9 +101,13 @@ jobs:
           curl -L -o xcodeproj https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.version }}/xcodeproj-${{ steps.version.outputs.version }}-macos-universal.tar.gz
           tar -xzf xcodeproj-${{ steps.version.outputs.version }}-macos-universal.tar.gz
 
-          # Make executable and install
+          # Make executable
           chmod +x xcodeproj
-          sudo mv xcodeproj /usr/local/bin/
+          
+          # Move to your preferred location
+          mv xcodeproj /path/to/your/bin/
+          # Or add to PATH: export PATH="$PATH:$(pwd)"
+          # Or run directly: ./xcodeproj --help
           ```
 
           #### Homebrew (Coming Soon)
