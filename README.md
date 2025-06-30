@@ -51,10 +51,31 @@ By converting the functionality from an MCP server to a standalone CLI, we get t
 
 ## Installation
 
-### Requirements
-- macOS 13.0 or later
-- Swift 5.7 or later
-- Xcode 14.0 or later
+### Quick Install (Recommended)
+
+```bash
+# Download and install latest version automatically
+curl -sSL https://raw.githubusercontent.com/ainame/xcodeproj_cli/main/install.sh | bash
+```
+
+### Manual Download
+
+```bash
+# Download latest release
+curl -L -o xcodeproj.tar.gz "https://github.com/ainame/xcodeproj_cli/releases/latest/download/xcodeproj-v0.0.1-macos-universal.tar.gz"
+
+# Extract and install
+tar -xzf xcodeproj.tar.gz
+chmod +x xcodeproj
+sudo mv xcodeproj /usr/local/bin/
+```
+
+### Homebrew (Coming Soon)
+
+```bash
+brew tap ainame/tap
+brew install xcodeproj
+```
 
 ### Build from Source
 
@@ -62,16 +83,12 @@ By converting the functionality from an MCP server to a standalone CLI, we get t
 git clone https://github.com/ainame/xcodeproj_cli.git
 cd xcodeproj_cli
 swift build -c release
-```
-
-The executable will be available at `.build/release/xcodeproj`.
-
-### Install Locally
-
-```bash
-swift build -c release
 cp .build/release/xcodeproj /usr/local/bin/
 ```
+
+### Requirements
+- macOS 13.0 or later
+- For building from source: Swift 5.7+ and Xcode 14.0+
 
 ## Usage
 
