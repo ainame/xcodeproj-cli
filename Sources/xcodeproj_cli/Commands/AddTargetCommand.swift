@@ -21,7 +21,7 @@ struct AddTargetCommand: ParsableCommand {
     @Argument(help: "Bundle identifier for the target")
     var bundleIdentifier: String
     
-    @Option(name: .long, help: "Platform (iOS, macOS, tvOS, watchOS) - defaults to iOS")
+    @Option(name: .long, help: "Platform (iOS, macOS, tvOS, watchOS) (defaults to iOS)")
     var platform: String = "iOS"
     
     @Option(name: .long, help: "Deployment target version")

@@ -12,7 +12,7 @@ struct CreateCommand: ParsableCommand {
     @Argument(help: "Name of the project to create")
     var projectName: String
     
-    @Option(name: .shortAndLong, help: "Path where the project should be created (defaults to current directory)")
+    @Option(name: .long, help: "Path where the project should be created (defaults to current directory)")
     var path: String = "."
     
     @Option(name: .long, help: "Organization name for the project")

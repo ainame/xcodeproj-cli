@@ -15,14 +15,14 @@ struct SetBuildSettingCommand: ParsableCommand {
     @Argument(help: "Name of the target to modify")
     var targetName: String
     
-    @Argument(help: "Build configuration name (Debug, Release, or All)")
-    var configuration: String
-    
     @Argument(help: "Name of the build setting to modify")
     var settingName: String
     
     @Argument(help: "New value for the build setting")
     var settingValue: String
+    
+    @Option(name: .long, help: "Build configuration name (defaults to All)")
+    var configuration: String = "All"
     
     mutating func run() throws {
         do {

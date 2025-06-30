@@ -61,7 +61,7 @@ echo -e "${BLUE}=== 9. ADD DEPENDENCY ===${NC}"
 run_command "$CLI_PATH add-dependency TestDemo.xcodeproj TestDemo DemoLib"
 
 echo -e "${BLUE}=== 10. SET BUILD SETTING ===${NC}"
-run_command "$CLI_PATH set-build-setting TestDemo.xcodeproj TestDemo Debug SWIFT_VERSION 5.9"
+run_command "$CLI_PATH set-build-setting TestDemo.xcodeproj TestDemo SWIFT_VERSION 5.9 --configuration Debug"
 
 echo -e "${BLUE}=== 11. ADD FRAMEWORK ===${NC}"
 run_command "$CLI_PATH add-framework TestDemo.xcodeproj TestDemo UIKit"
