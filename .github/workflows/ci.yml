@@ -12,7 +12,7 @@ env:
 jobs:
   test:
     name: Test on macOS
-    runs-on: macos-latest
+    runs-on: macos-15
     
     steps:
     - name: Checkout
@@ -21,7 +21,12 @@ jobs:
     - name: Setup Xcode
       uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '16.2'
+        xcode-version: '16.4'
+        
+    - name: Verify Swift Version
+      run: |
+        swift --version
+        echo "Required: Swift 6.1+ for tools-version 6.1"
         
     - name: Cache Swift Dependencies
       uses: actions/cache@v3
@@ -62,7 +67,7 @@ jobs:
         
   lint:
     name: Swift Format Check
-    runs-on: macos-latest
+    runs-on: macos-15
     
     steps:
     - name: Checkout
@@ -71,7 +76,7 @@ jobs:
     - name: Setup Xcode
       uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '16.2'
+        xcode-version: '16.4'
         
     - name: Check Swift Format
       run: |
