@@ -15,7 +15,7 @@ struct ValidationError: LocalizedError {
 }
 
 // Add FileHandle extension for stderr
-@retroactive extension FileHandle: TextOutputStream {
+extension FileHandle: @retroactive TextOutputStream {
     public func write(_ string: String) {
         if let data = string.data(using: .utf8) {
             self.write(data)
