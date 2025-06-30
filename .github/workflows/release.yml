@@ -18,21 +18,14 @@ jobs:
   build:
     name: Build Universal Binary
     runs-on: macos-15
-    
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-      
+
     - name: Setup Xcode
-      uses: maxim-lobanov/setup-xcode@v1
-      with:
-        xcode-version: '16.4'
-        
-    - name: Verify Swift Version
-      run: |
-        swift --version
-        echo "Required: Swift 6.1+ for tools-version 6.1"
-        
+      run: sudo xcode-select -s /Applications/Xcode_16.3.app/Contents/Developer
+
     - name: Get version
       id: version
       run: |
@@ -41,50 +34,50 @@ jobs:
         else
           echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
         fi
-        
+
     - name: Build for arm64 (Apple Silicon)
       run: |
         swift build -c release --arch arm64
         mkdir -p build/arm64
         cp .build/arm64-apple-macosx/release/${{ env.PRODUCT_NAME }} build/arm64/
-        
+
     - name: Build for x86_64 (Intel)
       run: |
         swift build -c release --arch x86_64
         mkdir -p build/x86_64
         cp .build/x86_64-apple-macosx/release/${{ env.PRODUCT_NAME }} build/x86_64/
-        
+
     - name: Create Universal Binary
       run: |
         mkdir -p build/universal
         lipo -create -output build/universal/${{ env.PRODUCT_NAME }} \
           build/arm64/${{ env.PRODUCT_NAME }} \
           build/x86_64/${{ env.PRODUCT_NAME }}
-        
+
     - name: Verify Universal Binary
       run: |
         file build/universal/${{ env.PRODUCT_NAME }}
         lipo -info build/universal/${{ env.PRODUCT_NAME }}
-        
+
     - name: Create Archive
       run: |
         cd build/universal
         tar -czf ../../${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz ${{ env.PRODUCT_NAME }}
         cd ../..
-        
+
     - name: Generate Checksums
       run: |
         cd build/universal
         shasum -a 256 ${{ env.PRODUCT_NAME }} > ../../${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-checksums.txt
         cd ../..
         shasum -a 256 ${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz >> ${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-checksums.txt
-        
+
     - name: Test Binary
       run: |
         chmod +x build/universal/${{ env.PRODUCT_NAME }}
         build/universal/${{ env.PRODUCT_NAME }} --version
         build/universal/${{ env.PRODUCT_NAME }} --help
-        
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -97,42 +90,42 @@ jobs:
         prerelease: ${{ contains(steps.version.outputs.version, 'alpha') || contains(steps.version.outputs.version, 'beta') || contains(steps.version.outputs.version, 'rc') }}
         body: |
           ## xcodeproj CLI ${{ steps.version.outputs.version }}
-          
+
           A command-line tool for manipulating Xcode project files (.xcodeproj) using Swift.
-          
+
           ### Installation
-          
+
           #### Download and Install
           ```bash
           # Download the binary
           curl -L -o xcodeproj https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.version }}/xcodeproj-${{ steps.version.outputs.version }}-macos-universal.tar.gz
           tar -xzf xcodeproj-${{ steps.version.outputs.version }}-macos-universal.tar.gz
-          
+
           # Make executable and install
           chmod +x xcodeproj
           sudo mv xcodeproj /usr/local/bin/
           ```
-          
+
           #### Homebrew (Coming Soon)
           ```bash
           brew install ainame/tap/xcodeproj
           ```
-          
+
           ### Features
           - ✅ All 19 commands from xcodeproj-mcp-server
           - ✅ Universal binary (Apple Silicon + Intel)
           - ✅ Fast execution and agent-friendly
           - ✅ Complete Xcode project manipulation
-          
+
           ### Verification
           ```bash
           xcodeproj --version
           xcodeproj --help
           ```
-          
+
           ### Checksums
           See attached checksums file for binary verification.
-          
+
     - name: Upload Release Binary
       uses: actions/upload-release-asset@v1
       env:
@@ -142,7 +135,7 @@ jobs:
         asset_path: ./build/universal/${{ env.PRODUCT_NAME }}
         asset_name: ${{ env.PRODUCT_NAME }}
         asset_content_type: application/octet-stream
-        
+
     - name: Upload Release Archive
       uses: actions/upload-release-asset@v1
       env:
@@ -152,7 +145,7 @@ jobs:
         asset_path: ./${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz
         asset_name: ${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz
         asset_content_type: application/gzip
-        
+
     - name: Upload Checksums
       uses: actions/upload-release-asset@v1
       env:
