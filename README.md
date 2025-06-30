@@ -6,6 +6,18 @@ A command-line tool for manipulating Xcode project files (.xcodeproj) using Swif
 
 xcodeproj CLI is a Swift-based command-line interface that enables developers to automate Xcode project management tasks. It supports all major project operations including file management, target configuration, dependency management, and build settings modification.
 
+## Motivation
+
+This project was inspired by a [YouTube video](https://youtu.be/nfOVgz_omlU?si=WqrwS-kxpN9dUbkb&t=1118) that recommended using fast and user-friendly command-line tools instead of Model Context Protocol (MCP) servers for certain workflows. While MCP servers can take advantage of context and are excellent for interactive use, CLI tools offer distinct advantages:
+
+- **Speed and Efficiency**: CLI tools start instantly without server overhead
+- **User-Friendly**: Simple, straightforward command syntax
+- **Agent-Friendly**: Perfect for use with AI coding agents that can quickly execute commands
+- **No Context Dependency**: Each command is self-contained and explicit
+- **Automation-Ready**: Easy to integrate into scripts, CI/CD pipelines, and development workflows
+
+By converting the functionality from an MCP server to a standalone CLI, we get the best of both worlds: the comprehensive Xcode project manipulation capabilities with the speed and simplicity that developers expect from command-line tools.
+
 ## Features
 
 ### Core Operations
