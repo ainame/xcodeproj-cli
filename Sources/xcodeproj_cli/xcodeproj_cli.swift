@@ -17,15 +17,7 @@ struct XcodeprojCLI: ParsableCommand {
             MoveFileCommand.self,
             CreateGroupCommand.self,
             AddTargetCommand.self,
-            RemoveTargetCommand.self,
-            AddDependencyCommand.self,
-            SetBuildSettingCommand.self,
-            AddFrameworkCommand.self,
-            AddBuildPhaseCommand.self,
-            DuplicateTargetCommand.self,
-            AddSwiftPackageCommand.self,
-            ListSwiftPackagesCommand.self,
-            RemoveSwiftPackageCommand.self
+            SetBuildSettingCommand.self
         ]
     )
 }
