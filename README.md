@@ -62,11 +62,11 @@ swift build -c release
 cp .build/release/xcodeproj /path/to/your/bin/
 
 # Option 2: Add to PATH in your shell profile
-echo 'export PATH="$PATH:/path/to/xcodeproj_cli/.build/release"' >> ~/.zshrc
+echo 'export PATH="$PATH:/path/to/xcodeproj-cli/.build/release"' >> ~/.zshrc
 source ~/.zshrc
 
 # Option 3: Create an alias
-echo 'alias xcodeproj="/path/to/xcodeproj_cli/.build/release/xcodeproj"' >> ~/.zshrc
+echo 'alias xcodeproj="/path/to/xcodeproj-cli/.build/release/xcodeproj"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
@@ -76,7 +76,7 @@ Pre-built binaries will be available from GitHub Releases once the first release
 
 ```bash
 # Will be available after first release
-curl -L -o xcodeproj.tar.gz "https://github.com/ainame/xcodeproj_cli/releases/latest/download/xcodeproj-v0.0.1-macos-universal.tar.gz"
+curl -L -o xcodeproj.tar.gz "https://github.com/ainame/xcodeproj-cli/releases/latest/download/xcodeproj-v0.0.1-macos-universal.tar.gz"
 tar -xzf xcodeproj.tar.gz
 chmod +x xcodeproj
 
@@ -195,11 +195,11 @@ Each command is implemented as a separate `ParsableCommand` struct, making the c
 ### Project Structure
 
 ```
-xcodeproj_cli/
+xcodeproj-cli/
 ├── Package.swift
 ├── Sources/
-│   └── xcodeproj_cli/
-│       ├── xcodeproj_cli.swift          # Main CLI entry point
+│   └── xcodeproj-cli/
+│       ├── xcodeproj-cli.swift          # Main CLI entry point
 │       ├── Utilities/
 │       │   └── ErrorHandling.swift     # Error handling utilities
 │       └── Commands/                   # Individual command implementations
@@ -212,9 +212,9 @@ xcodeproj_cli/
 
 ### Adding New Commands
 
-1. Create a new command file in `Sources/xcodeproj_cli/Commands/`
+1. Create a new command file in `Sources/xcodeproj-cli/Commands/`
 2. Implement the `ParsableCommand` protocol
-3. Add the command to the main CLI configuration in `xcodeproj_cli.swift`
+3. Add the command to the main CLI configuration in `xcodeproj-cli.swift`
 
 ### Testing
 
