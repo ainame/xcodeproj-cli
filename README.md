@@ -54,8 +54,8 @@ By converting the functionality from an MCP server to a standalone CLI, we get t
 ### Build from Source (Current Method)
 
 ```bash
-git clone https://github.com/ainame/xcodeproj_cli.git
-cd xcodeproj_cli
+git clone https://github.com/ainame/xcodeproj-cli.git
+cd xcodeproj-cli
 swift build -c release
 
 # Option 1: Copy to a directory in your PATH
