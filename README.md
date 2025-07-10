@@ -56,6 +56,8 @@ brew install xcodeproj
 
 ### Build from Source
 
+<details>
+
 ```bash
 git clone https://github.com/ainame/xcodeproj-cli.git
 cd xcodeproj-cli
@@ -72,6 +74,8 @@ source ~/.zshrc
 echo 'alias xcodeproj="/path/to/xcodeproj-cli/.build/release/xcodeproj"' >> ~/.zshrc
 source ~/.zshrc
 ```
+
+</details>
 
 ## Usage
 
