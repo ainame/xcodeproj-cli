@@ -159,55 +159,14 @@ xcodeproj create --help
 xcodeproj add-swift-package --help
 ```
 
-## Architecture
-
-The project is built using:
-
-- **Swift ArgumentParser** for command-line interface structure
-- **XcodeProj** library for .xcodeproj file manipulation
-- **PathKit** for file system path handling
-
-Each command is implemented as a separate `ParsableCommand` struct, making the codebase modular and extensible.
-
 ## Development
-
-### Project Structure
-
-```
-xcodeproj-cli/
-├── Package.swift
-├── Sources/
-│   └── xcodeproj-cli/
-│       ├── xcodeproj-cli.swift          # Main CLI entry point
-│       ├── Utilities/
-│       │   └── ErrorHandling.swift     # Error handling utilities
-│       └── Commands/                   # Individual command implementations
-│           ├── CreateCommand.swift
-│           ├── AddFileCommand.swift
-│           └── ...
-├── Tests/
-└── README.md
-```
-
-### Adding New Commands
-
-1. Create a new command file in `Sources/xcodeproj-cli/Commands/`
-2. Implement the `ParsableCommand` protocol
-3. Add the command to the main CLI configuration in `xcodeproj-cli.swift`
 
 ### Testing
 
-Run the test suite:
+Run test:
 
 ```bash
-swift test
-```
-
-Build and test manually:
-
-```bash
-swift build
-.build/debug/xcodeproj --help
+scripts/test_xcodeproject_cli.sh
 ```
 
 ## Contributing
