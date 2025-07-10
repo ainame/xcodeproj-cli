@@ -52,7 +52,7 @@ jobs:
     - name: Run Comprehensive Tests
       run: |
         chmod +x test_xcodeproj_cli.sh
-        ./test_xcodeproj_cli.sh
+        ./scripts/test_xcodeproj_cli.sh
 
     - name: Cleanup Test Artifacts
       run: |
