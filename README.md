@@ -51,7 +51,14 @@ By converting the functionality from an MCP server to a standalone CLI, we get t
 
 ## Installation
 
-### Build from Source (Current Method)
+### Homebrew
+
+```bash
+brew tap ainame/xcodeproj-cli
+brew install xcodeproj
+```
+
+### Build from Source
 
 ```bash
 git clone https://github.com/ainame/xcodeproj-cli.git
@@ -83,13 +90,6 @@ chmod +x xcodeproj
 # Move to your preferred location
 mv xcodeproj /path/to/your/bin/
 # Or run directly: ./xcodeproj --help
-```
-
-### Homebrew
-
-```bash
-brew tap ainame/xcodeproj-cli
-brew install xcodeproj
 ```
 
 ### Requirements
