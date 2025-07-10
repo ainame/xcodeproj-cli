@@ -1,14 +1,10 @@
 # xcodeproj CLI
 
-A command-line tool for manipulating Xcode project files (.xcodeproj) using Swift. This tool provides comprehensive functionality to create, modify, and manage Xcode projects programmatically.
-
-## Overview
-
-xcodeproj CLI is a Swift-based command-line interface that enables developers to automate Xcode project management tasks. It supports all major project operations including file management, target configuration, dependency management, and build settings modification.
+A command-line tool for manipulating Xcode project files (.xcodeproj) using Swift. This tool provides comprehensive functionality to create, modify, and manage Xcode projects programmatically. This is especially handy when writing code with coding agent such as Claude Code, Gemini CLI, or Codex.
 
 ## Motivation
 
-This project was inspired by a [YouTube video](https://youtu.be/nfOVgz_omlU?si=WqrwS-kxpN9dUbkb&t=1118) that recommended using fast and user-friendly command-line tools instead of Model Context Protocol (MCP) servers for certain workflows. While MCP servers can take advantage of context and are excellent for interactive use, CLI tools offer distinct advantages:
+This project was inspired by a [YouTube video](https://youtu.be/nfOVgz_omlU?si=WqrwS-kxpN9dUbkb&t=1118) that recommended using  command-line tools instead of Model Context Protocol (MCP) servers for certain workflows. While MCP servers can take advantage of context and are excellent for interactive use, CLI tools offer distinct advantages:
 
 - **Speed and Efficiency**: CLI tools start instantly without server overhead
 - **User-Friendly**: Simple, straightforward command syntax
@@ -76,26 +72,6 @@ source ~/.zshrc
 echo 'alias xcodeproj="/path/to/xcodeproj-cli/.build/release/xcodeproj"' >> ~/.zshrc
 source ~/.zshrc
 ```
-
-### Download Releases (Coming Soon)
-
-Pre-built binaries will be available from GitHub Releases once the first release is published:
-
-```bash
-# Will be available after first release
-curl -L -o xcodeproj.tar.gz "https://github.com/ainame/xcodeproj-cli/releases/latest/download/xcodeproj-v0.0.1-macos-universal.tar.gz"
-tar -xzf xcodeproj.tar.gz
-chmod +x xcodeproj
-
-# Move to your preferred location
-mv xcodeproj /path/to/your/bin/
-# Or run directly: ./xcodeproj --help
-```
-
-### Requirements
-- macOS 13.0 or later
-- Swift 6.1+ and Xcode 16.0+ (for building from source)
-- Universal binary supports both Apple Silicon and Intel Macs
 
 ## Usage
 
@@ -234,13 +210,10 @@ swift build
 
 Contributions are welcome! Please feel free to submit issues, feature requests, or pull requests.
 
-### Guidelines
+### Requirements
 
-1. Follow Swift coding conventions
-2. Add appropriate error handling
-3. Include help documentation for new commands
-4. Test your changes thoroughly
-5. Update this README for new features
+- Swift 6.1+ and Xcode 16.4+ (for building from source)
+- Universal binary supports both Apple Silicon and Intel Macs
 
 ## License
 
@@ -248,23 +221,7 @@ This project is available under the MIT License. See the LICENSE file for more d
 
 ## Acknowledgments
 
-This project builds upon the excellent work of several open-source projects and their contributors:
+This project builds upon the excellent work of these open-source projects and their contributors:
 
-### Core Dependencies
-
+- **[giginet/xcodeproj-mcp-server](https://github.com/giginet/xcodeproj-mcp-server)** - Created by @giginet, this Model Context Protocol (MCP) server provided the initial inspiration and reference implementation for many of the commands in this CLI tool. The MCP server's comprehensive feature set and well-structured codebase served as an excellent foundation for porting functionality to a standalone command-line interface.
 - **[tuist/XcodeProj](https://github.com/tuist/XcodeProj)** - The foundational library that enables reading, updating, and writing Xcode project files. Created and maintained by the Tuist team, this library provides the core functionality that makes xcodeproj CLI possible.
-
-- **[apple/swift-argument-parser](https://github.com/apple/swift-argument-parser)** - Apple's Swift library for parsing command-line arguments, which provides the robust CLI interface framework used throughout this project.
-
-### Inspiration and Reference
-
-- **[giginet/xcodeproj-mcp-server](https://github.com/giginet/xcodeproj-mcp-server)** - Created by Kohki Miki (@giginet), this Model Context Protocol (MCP) server provided the initial inspiration and reference implementation for many of the commands in this CLI tool. The MCP server's comprehensive feature set and well-structured codebase served as an excellent foundation for porting functionality to a standalone command-line interface.
-
-### Special Thanks
-
-- **Tuist Team** - For creating and maintaining XcodeProj, an essential tool for the iOS development ecosystem
-- **Kohki Miki (@giginet)** - For the original MCP server implementation and demonstrating comprehensive Xcode project manipulation capabilities
-- **Apple Swift Team** - For Swift ArgumentParser and the Swift programming language
-- **The Swift Community** - For continuous contributions to the Swift ecosystem
-
-This project demonstrates the power of building upon existing open-source work to create new tools that serve the developer community.
