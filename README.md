@@ -50,7 +50,7 @@ By converting the functionality from an MCP server to a standalone CLI, we get t
 ### Homebrew
 
 ```bash
-brew tap ainame/xcodeproj-cli
+brew tap ainame/xcodeproj-cli https://github.com/ainame/xcodeproj-cli
 brew install xcodeproj
 ```
 
