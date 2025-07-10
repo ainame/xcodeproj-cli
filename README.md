@@ -85,11 +85,10 @@ mv xcodeproj /path/to/your/bin/
 # Or run directly: ./xcodeproj --help
 ```
 
-### Homebrew (Future)
+### Homebrew
 
 ```bash
-# Planned for future release
-brew tap ainame/tap
+brew tap ainame/xcodeproj-cli
 brew install xcodeproj
 ```
 
