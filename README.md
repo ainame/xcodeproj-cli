@@ -166,7 +166,7 @@ xcodeproj add-swift-package --help
 Run test:
 
 ```bash
-scripts/test_xcodeproject_cli.sh
+scripts/test.sh
 ```
 
 ## Contributing
