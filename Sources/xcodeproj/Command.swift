@@ -1,7 +1,7 @@
 import ArgumentParser
 
 @main
-struct XcodeprojCLI: ParsableCommand {
+struct Command: ParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "xcodeproj",
         abstract: "A tool for manipulating Xcode project files",

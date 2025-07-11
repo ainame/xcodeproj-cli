@@ -4,10 +4,10 @@
 import PackageDescription
 
 let package = Package(
-    name: "xcodeproj_cli",
+    name: "xcodeproj-cli",
     platforms: [.macOS(.v13)],
     products: [
-        .executable(name: "xcodeproj", targets: ["xcodeproj_cli"])
+        .executable(name: "xcodeproj", targets: ["xcodeproj"])
     ],
     dependencies: [
         .package(url: "https://github.com/tuist/XcodeProj.git", from: "8.23.0"),
@@ -17,7 +17,7 @@ let package = Package(
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .executableTarget(
-            name: "xcodeproj_cli",
+            name: "xcodeproj",
             dependencies: [
                 .product(name: "XcodeProj", package: "XcodeProj"),
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
