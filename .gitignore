@@ -7,7 +7,6 @@ DerivedData/
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
 tmp
-scripts
 CLAUDE.md
 releases/
 *.d
