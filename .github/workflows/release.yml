@@ -11,6 +11,9 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: write
+
 env:
   PRODUCT_NAME: xcodeproj
 
@@ -78,84 +81,61 @@ jobs:
         build/universal/${{ env.PRODUCT_NAME }} --version
         build/universal/${{ env.PRODUCT_NAME }} --help
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
+    - name: Create Release and Upload Assets
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ steps.version.outputs.version }}
-        release_name: xcodeproj CLI ${{ steps.version.outputs.version }}
-        draft: false
-        prerelease: ${{ contains(steps.version.outputs.version, 'alpha') || contains(steps.version.outputs.version, 'beta') || contains(steps.version.outputs.version, 'rc') }}
-        body: |
-          ## xcodeproj CLI ${{ steps.version.outputs.version }}
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        # Create release notes
+        cat > release_notes.md << 'EOF'
+        ## xcodeproj CLI ${{ steps.version.outputs.version }}
 
-          A command-line tool for manipulating Xcode project files (.xcodeproj) using Swift.
+        A command-line tool for manipulating Xcode project files (.xcodeproj) using Swift.
 
-          ### Installation
+        ### Installation
 
-          #### Download and Install
-          ```bash
-          # Download the binary
-          curl -L -o xcodeproj https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.version }}/xcodeproj-${{ steps.version.outputs.version }}-macos-universal.tar.gz
-          tar -xzf xcodeproj-${{ steps.version.outputs.version }}-macos-universal.tar.gz
+        #### Download and Install
+        ```bash
+        # Download the binary
+        curl -L -o xcodeproj.tar.gz https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.version }}/${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz
+        tar -xzf xcodeproj.tar.gz
 
-          # Make executable
-          chmod +x xcodeproj
-          
-          # Move to your preferred location
-          mv xcodeproj /path/to/your/bin/
-          # Or add to PATH: export PATH="$PATH:$(pwd)"
-          # Or run directly: ./xcodeproj --help
-          ```
+        # Make executable and move to PATH
+        chmod +x ${{ env.PRODUCT_NAME }}
+        mv ${{ env.PRODUCT_NAME }} /usr/local/bin/
+        ```
 
-          #### Homebrew (Coming Soon)
-          ```bash
-          brew install ainame/tap/xcodeproj
-          ```
+        #### Homebrew (Coming Soon)
+        ```bash
+        brew install ainame/tap/xcodeproj
+        ```
 
-          ### Features
-          - ✅ All 19 commands from xcodeproj-mcp-server
-          - ✅ Universal binary (Apple Silicon + Intel)
-          - ✅ Fast execution and agent-friendly
-          - ✅ Complete Xcode project manipulation
+        ### Features
+        - ✅ All 19 commands from xcodeproj-mcp-server
+        - ✅ Universal binary (Apple Silicon + Intel)
+        - ✅ Fast execution and agent-friendly
+        - ✅ Complete Xcode project manipulation
 
-          ### Verification
-          ```bash
-          xcodeproj --version
-          xcodeproj --help
-          ```
+        ### Verification
+        ```bash
+        xcodeproj --version
+        xcodeproj --help
+        ```
 
-          ### Checksums
-          See attached checksums file for binary verification.
+        ### Checksums
+        See attached checksums file for binary verification.
+        EOF
 
-    - name: Upload Release Binary
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./build/universal/${{ env.PRODUCT_NAME }}
-        asset_name: ${{ env.PRODUCT_NAME }}
-        asset_content_type: application/octet-stream
+        # Determine if prerelease
+        PRERELEASE_FLAG=""
+        if [[ "${{ steps.version.outputs.version }}" == *"alpha"* ]] || [[ "${{ steps.version.outputs.version }}" == *"beta"* ]] || [[ "${{ steps.version.outputs.version }}" == *"rc"* ]]; then
+          PRERELEASE_FLAG="--prerelease"
+        fi
 
-    - name: Upload Release Archive
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz
-        asset_name: ${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz
-        asset_content_type: application/gzip
-
-    - name: Upload Checksums
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-checksums.txt
-        asset_name: ${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-checksums.txt
-        asset_content_type: text/plain
+        # Create release with assets
+        gh release create "${{ steps.version.outputs.version }}" \
+          --title "xcodeproj CLI ${{ steps.version.outputs.version }}" \
+          --notes-file release_notes.md \
+          $PRERELEASE_FLAG \
+          build/universal/${{ env.PRODUCT_NAME }} \
+          ${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz \
+          ${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-checksums.txt
