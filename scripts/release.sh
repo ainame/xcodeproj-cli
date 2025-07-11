@@ -20,7 +20,7 @@ if [ $# -eq 0 ]; then
 fi
 
 VERSION=$1
-TAG="v${VERSION}"
+TAG="${VERSION}"
 
 # Validate version format (basic check)
 if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$ ]]; then
