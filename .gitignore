@@ -10,3 +10,5 @@ tmp
 scripts
 CLAUDE.md
 releases/
+*.d
+*.dia

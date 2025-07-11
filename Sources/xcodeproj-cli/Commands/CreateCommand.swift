@@ -39,12 +39,12 @@ struct CreateCommand: ParsableCommand {
             let debugConfig = XCBuildConfiguration(
                 name: "Debug",
                 buildSettings: [
-                    "ORGANIZATION_NAME": organizationName
+                    "ORGANIZATION_NAME": .string(organizationName)
                 ])
             let releaseConfig = XCBuildConfiguration(
                 name: "Release",
                 buildSettings: [
-                    "ORGANIZATION_NAME": organizationName
+                    "ORGANIZATION_NAME": .string(organizationName)
                 ])
             pbxproj.add(object: debugConfig)
             pbxproj.add(object: releaseConfig)

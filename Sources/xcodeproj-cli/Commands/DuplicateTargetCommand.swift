@@ -45,16 +45,16 @@ struct DuplicateTargetCommand: ParsableCommand {
                 var newBuildSettings = sourceConfig.buildSettings
                 
                 // Update product name and bundle identifier
-                newBuildSettings["PRODUCT_NAME"] = newTargetName
+                newBuildSettings["PRODUCT_NAME"] = .string(newTargetName)
                 if let newBundleIdentifier = newBundleIdentifier {
-                    newBuildSettings["BUNDLE_IDENTIFIER"] = newBundleIdentifier
+                    newBuildSettings["BUNDLE_IDENTIFIER"] = .string(newBundleIdentifier)
                 }
                 
                 // Update info plist if it references the target name
-                if let infoPlist = newBuildSettings["INFOPLIST_FILE"] as? String,
+                if case .string(let infoPlist) = newBuildSettings["INFOPLIST_FILE"],
                    infoPlist.contains(sourceTarget.name) {
                     let newInfoPlist = infoPlist.replacingOccurrences(of: sourceTarget.name, with: newTargetName)
-                    newBuildSettings["INFOPLIST_FILE"] = newInfoPlist
+                    newBuildSettings["INFOPLIST_FILE"] = .string(newInfoPlist)
                 }
                 
                 let newConfig = XCBuildConfiguration(name: sourceConfig.name, buildSettings: newBuildSettings)

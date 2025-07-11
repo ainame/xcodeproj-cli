@@ -48,7 +48,7 @@ struct SetBuildSettingCommand: ParsableCommand {
             // Handle "All" configuration
             if configuration.lowercased() == "all" {
                 for config in configList.buildConfigurations {
-                    config.buildSettings[settingName] = settingValue
+                    config.buildSettings[settingName] = .string(settingValue)
                     modifiedConfigurations.append(config.name)
                 }
             } else {
@@ -58,7 +58,7 @@ struct SetBuildSettingCommand: ParsableCommand {
                     return
                 }
                 
-                config.buildSettings[settingName] = settingValue
+                config.buildSettings[settingName] = .string(settingValue)
                 modifiedConfigurations.append(config.name)
             }
             

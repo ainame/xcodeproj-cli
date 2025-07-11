@@ -44,12 +44,11 @@ struct GetBuildSettingsCommand: ParsableCommand {
             var settingsList: [String] = []
             for (key, value) in config.buildSettings.sorted(by: { $0.key < $1.key }) {
                 let valueString: String
-                if let stringValue = value as? String {
+                switch value {
+                case .string(let stringValue):
                     valueString = stringValue
-                } else if let arrayValue = value as? [String] {
+                case .array(let arrayValue):
                     valueString = arrayValue.joined(separator: " ")
-                } else {
-                    valueString = "\(value)"
                 }
                 settingsList.append("  \(key) = \(valueString)")
             }

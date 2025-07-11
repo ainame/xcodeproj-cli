@@ -71,19 +71,19 @@ struct AddTargetCommand: ParsableCommand {
             let targetDebugConfig = XCBuildConfiguration(
                 name: "Debug",
                 buildSettings: [
-                    "PRODUCT_NAME": targetName,
-                    "PRODUCT_BUNDLE_IDENTIFIER": bundleIdentifier,
-                    "SWIFT_VERSION": "5.0",
-                    "TARGETED_DEVICE_FAMILY": platform == "iOS" ? "1,2" : "1",
+                    "PRODUCT_NAME": .string(targetName),
+                    "PRODUCT_BUNDLE_IDENTIFIER": .string(bundleIdentifier),
+                    "SWIFT_VERSION": .string("5.0"),
+                    "TARGETED_DEVICE_FAMILY": .string(platform == "iOS" ? "1,2" : "1"),
                 ])
             
             let targetReleaseConfig = XCBuildConfiguration(
                 name: "Release",
                 buildSettings: [
-                    "PRODUCT_NAME": targetName,
-                    "PRODUCT_BUNDLE_IDENTIFIER": bundleIdentifier,
-                    "SWIFT_VERSION": "5.0",
-                    "TARGETED_DEVICE_FAMILY": platform == "iOS" ? "1,2" : "1",
+                    "PRODUCT_NAME": .string(targetName),
+                    "PRODUCT_BUNDLE_IDENTIFIER": .string(bundleIdentifier),
+                    "SWIFT_VERSION": .string("5.0"),
+                    "TARGETED_DEVICE_FAMILY": .string(platform == "iOS" ? "1,2" : "1"),
                 ])
             
             // Add deployment target if specified
@@ -101,8 +101,8 @@ struct AddTargetCommand: ParsableCommand {
                 default:
                     deploymentKey = "IPHONEOS_DEPLOYMENT_TARGET"
                 }
-                targetDebugConfig.buildSettings[deploymentKey] = deploymentTarget
-                targetReleaseConfig.buildSettings[deploymentKey] = deploymentTarget
+                targetDebugConfig.buildSettings[deploymentKey] = .string(deploymentTarget)
+                targetReleaseConfig.buildSettings[deploymentKey] = .string(deploymentTarget)
             }
             
             xcodeproj.pbxproj.add(object: targetDebugConfig)
