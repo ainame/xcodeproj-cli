@@ -1,0 +1,46 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base",
+    ":dependencyDashboard",
+    ":semanticCommitTypeAll(chore)"
+  ],
+  "swift": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "matchManagers": ["swift"],
+      "groupName": "Swift dependencies",
+      "groupSlug": "swift-deps",
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "matchPackageNames": ["tuist/XcodeProj"],
+      "groupName": "XcodeProj",
+      "automerge": false,
+      "semanticCommitType": "feat",
+      "semanticCommitScope": "deps"
+    },
+    {
+      "matchPackageNames": ["apple/swift-argument-parser"],
+      "groupName": "Swift Argument Parser",
+      "automerge": true
+    }
+  ],
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 3,
+  "schedule": ["after 9am and before 5pm every weekday"],
+  "timezone": "UTC",
+  "labels": ["dependencies"],
+  "commitMessagePrefix": "chore(deps):",
+  "commitMessageAction": "update",
+  "commitMessageTopic": "{{depName}}",
+  "commitMessageExtra": "from {{currentVersion}} to {{newVersion}}",
+  "rangeStrategy": "auto",
+  "postUpdateOptions": ["swiftBuildTest"],
+  "platformAutomerge": true,
+  "ignoreTests": false
+}
