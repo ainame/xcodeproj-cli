@@ -81,6 +81,40 @@ jobs:
         build/universal/${{ env.PRODUCT_NAME }} --version
         build/universal/${{ env.PRODUCT_NAME }} --help
 
+    - name: Update Version Information
+      run: |
+        # Extract version without 'v' prefix
+        VERSION="${{ steps.version.outputs.version }}"
+        VERSION_NUMBER="${VERSION#v}"
+        
+        # Get SHA256 of the archive for Homebrew formula
+        ARCHIVE_SHA256=$(shasum -a 256 ${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz | cut -d' ' -f1)
+        
+        # Update version in Command.swift
+        sed -i '' "s/version: \"[^\"]*\"/version: \"$VERSION_NUMBER\"/" Sources/xcodeproj-cli/Command.swift
+        
+        # Update Homebrew formula
+        sed -i '' "s|url \".*\"|url \"https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.version }}/${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz\"|" Formula/xcodeproj.rb
+        sed -i '' "s/sha256 \".*\"/sha256 \"$ARCHIVE_SHA256\"/" Formula/xcodeproj.rb
+        
+        echo "Updated Command.swift version to: $VERSION_NUMBER"
+        echo "Updated Formula with SHA256: $ARCHIVE_SHA256"
+
+    - name: Commit Version Updates
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add Sources/xcodeproj-cli/Command.swift Formula/xcodeproj.rb
+        git commit -m "chore: update version to ${{ steps.version.outputs.version }} and Formula
+
+        - Update Command.swift version to match release
+        - Update Homebrew formula URL and SHA256 hash
+        
+        🤖 Generated with [Claude Code](https://claude.ai/code)
+        
+        Co-Authored-By: Claude <noreply@anthropic.com>" || echo "No changes to commit"
+        git push origin HEAD:main || echo "Failed to push changes"
+
     - name: Create Release and Upload Assets
       env:
         GH_TOKEN: ${{ github.token }}
