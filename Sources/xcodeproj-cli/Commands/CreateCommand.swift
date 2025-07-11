@@ -60,16 +60,16 @@ struct CreateCommand: ParsableCommand {
             let targetDebugConfig = XCBuildConfiguration(
                 name: "Debug",
                 buildSettings: [
-                    "PRODUCT_BUNDLE_IDENTIFIER": "\(bundleIdentifier).\(projectName)",
-                    "PRODUCT_NAME": "$(TARGET_NAME)",
-                    "SWIFT_VERSION": "5.0",
+                    "PRODUCT_BUNDLE_IDENTIFIER": .string("\(bundleIdentifier).\(projectName)"),
+                    "PRODUCT_NAME": .string("$(TARGET_NAME)"),
+                    "SWIFT_VERSION": .string("5.0"),
                 ])
             let targetReleaseConfig = XCBuildConfiguration(
                 name: "Release",
                 buildSettings: [
-                    "PRODUCT_BUNDLE_IDENTIFIER": "\(bundleIdentifier).\(projectName)",
-                    "PRODUCT_NAME": "$(TARGET_NAME)",
-                    "SWIFT_VERSION": "5.0",
+                    "PRODUCT_BUNDLE_IDENTIFIER": .string("\(bundleIdentifier).\(projectName)"),
+                    "PRODUCT_NAME": .string("$(TARGET_NAME)"),
+                    "SWIFT_VERSION": .string("5.0"),
                 ])
             pbxproj.add(object: targetDebugConfig)
             pbxproj.add(object: targetReleaseConfig)
