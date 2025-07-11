@@ -1,8 +1,8 @@
 class Xcodeproj < Formula
   desc "Command-line tool for manipulating Xcode project files"
   homepage "https://github.com/ainame/xcodeproj-cli"
-  url "https://github.com/ainame/xcodeproj-cli/archive/refs/tags/v0.1.1.tar.gz"
-  sha256 "cce97ba6679e515954a111a2bf14bf0e3b4c8d97ff57fb50d0a5cbcabafdb82a"
+  url "https://github.com/ainame/xcodeproj-cli/releases/download/v0.1.0/xcodeproj-0.1.0-macos-universal.tar.gz"
+  sha256 "566f3022efcd28766c8375927cbb1f3c1cfec323ed991e2becfb6ed7676d85a6"
   license "MIT"
   head "https://github.com/ainame/xcodeproj-cli.git", branch: "main"
 
