@@ -109,6 +109,7 @@ echo -e "${BLUE}You can open it in Xcode to inspect the results:${NC}"
 echo -e "${YELLOW}open TestDemo.xcodeproj${NC}"
 
 echo ""
-echo -e "${BLUE}=== CLEANUP (Optional) ===${NC}"
-echo -e "${YELLOW}To clean up the test project, run:${NC}"
-echo -e "${YELLOW}rm -rf TestDemo.xcodeproj TestDemo/${NC}"
+echo -e "${BLUE}=== CLEANUP ===${NC}"
+echo -e "${YELLOW}Cleaning up test project...${NC}"
+rm -rf TestDemo.xcodeproj TestDemo/
+echo -e "${GREEN}✅ Cleanup complete${NC}"
