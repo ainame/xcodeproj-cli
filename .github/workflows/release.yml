@@ -85,11 +85,11 @@ jobs:
       run: |
         # Get SHA256 of the archive for Homebrew formula
         ARCHIVE_SHA256=$(shasum -a 256 ${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz | cut -d' ' -f1)
-        
+
         # Update Homebrew formula
         sed -i '' "s|url \".*\"|url \"https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.version }}/${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz\"|" Formula/xcodeproj.rb
         sed -i '' "s/sha256 \".*\"/sha256 \"$ARCHIVE_SHA256\"/" Formula/xcodeproj.rb
-        
+
         echo "Updated Formula with SHA256: $ARCHIVE_SHA256"
 
     - name: Commit Formula Update
@@ -101,9 +101,9 @@ jobs:
 
         - Update Homebrew formula URL and SHA256 hash
         - Point to new release assets
-        
+
         🤖 Generated with [Claude Code](https://claude.ai/code)
-        
+
         Co-Authored-By: Claude <noreply@anthropic.com>" || echo "No changes to commit"
         git push origin HEAD:main || echo "Failed to push changes"
 
@@ -111,46 +111,6 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        # Create release notes
-        cat > release_notes.md << 'EOF'
-        ## xcodeproj CLI ${{ steps.version.outputs.version }}
-
-        A command-line tool for manipulating Xcode project files (.xcodeproj) using Swift.
-
-        ### Installation
-
-        #### Download and Install
-        ```bash
-        # Download the binary
-        curl -L -o xcodeproj.tar.gz https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.version }}/${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz
-        tar -xzf xcodeproj.tar.gz
-
-        # Make executable and move to PATH
-        chmod +x ${{ env.PRODUCT_NAME }}
-        mv ${{ env.PRODUCT_NAME }} /usr/local/bin/
-        ```
-
-        #### Homebrew (Coming Soon)
-        ```bash
-        brew install ainame/tap/xcodeproj
-        ```
-
-        ### Features
-        - ✅ All 19 commands from xcodeproj-mcp-server
-        - ✅ Universal binary (Apple Silicon + Intel)
-        - ✅ Fast execution and agent-friendly
-        - ✅ Complete Xcode project manipulation
-
-        ### Verification
-        ```bash
-        xcodeproj --version
-        xcodeproj --help
-        ```
-
-        ### Checksums
-        See attached checksums file for binary verification.
-        EOF
-
         # Determine if prerelease
         PRERELEASE_FLAG=""
         if [[ "${{ steps.version.outputs.version }}" == *"alpha"* ]] || [[ "${{ steps.version.outputs.version }}" == *"beta"* ]] || [[ "${{ steps.version.outputs.version }}" == *"rc"* ]]; then
@@ -160,7 +120,7 @@ jobs:
         # Create release with assets
         gh release create "${{ steps.version.outputs.version }}" \
           --title "xcodeproj CLI ${{ steps.version.outputs.version }}" \
-          --notes-file release_notes.md \
+          --notes "" \
           $PRERELEASE_FLAG \
           build/universal/${{ env.PRODUCT_NAME }} \
           ${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz \
