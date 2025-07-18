@@ -1,5 +1,5 @@
 {
-  "originHash" : "22179cefb443dc454cfafa3d796a13488f7ad4e35406e216e7215bdb32ca80f5",
+  "originHash" : "ae75e276c2a6c4c5a5a8a9d12e8f390c33426937cc49702b6138ac91856853f9",
   "pins" : [
     {
       "identity" : "aexml",
@@ -13,19 +13,10 @@
     {
       "identity" : "pathkit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/kylef/PathKit.git",
+      "location" : "https://github.com/ainame/PathKit.git",
       "state" : {
-        "revision" : "3bfd2737b700b9a36565a8c94f4ad2b050a5e574",
-        "version" : "1.0.1"
-      }
-    },
-    {
-      "identity" : "spectre",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/kylef/Spectre.git",
-      "state" : {
-        "revision" : "26cc5e9ae0947092c7139ef7ba612e34646086c7",
-        "version" : "0.10.1"
+        "branch" : "b97d4fe",
+        "revision" : "b97d4fe305e38c6ad7af4337092446ae725bdb99"
       }
     },
     {
@@ -40,10 +31,10 @@
     {
       "identity" : "xcodeproj",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tuist/XcodeProj.git",
+      "location" : "https://github.com/ainame/XcodeProj.git",
       "state" : {
-        "revision" : "9799bb429fda8e360f4c535af1716bebc89fb235",
-        "version" : "9.4.3"
+        "branch" : "6f31e2d9",
+        "revision" : "6f31e2d9fd05d9c207911fe5faafe406e1007c3a"
       }
     }
   ],

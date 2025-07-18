@@ -5,12 +5,12 @@ import PackageDescription
 
 let package = Package(
     name: "xcodeproj-cli",
-    platforms: [.macOS(.v13)],
+    platforms: [.macOS(.v10_13)],
     products: [
         .executable(name: "xcodeproj", targets: ["xcodeproj-cli"])
     ],
     dependencies: [
-        .package(url: "https://github.com/tuist/XcodeProj.git", from: "9.4.3"),
+        .package(url: "https://github.com/ainame/XcodeProj.git", revision: "6f31e2d9"),
         .package(url: "https://github.com/apple/swift-argument-parser", from: "1.6.1")
     ],
     targets: [
