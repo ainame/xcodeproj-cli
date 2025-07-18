@@ -18,8 +18,8 @@ env:
   PRODUCT_NAME: xcodeproj
 
 jobs:
-  build:
-    name: Build Universal Binary
+  build-and-release:
+    name: Build Universal Binaries and Release
     runs-on: macos-15
 
     steps:
@@ -27,7 +27,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Setup Xcode
-      run: sudo xcode-select -s /Applications/Xcode_16.3.app/Contents/Developer
+      run: sudo xcode-select -s /Applications/Xcode_16.4.app/Contents/Developer
 
     - name: Get version
       id: version
@@ -38,76 +38,51 @@ jobs:
           echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
         fi
 
-    - name: Build for arm64 (Apple Silicon)
+    - name: Install Swiftly for Linux cross-compilation
       run: |
-        swift build -c release --arch arm64
-        mkdir -p build/arm64
-        cp .build/arm64-apple-macosx/release/${{ env.PRODUCT_NAME }} build/arm64/
+        # Install Swiftly using the official macOS method to user directory
+        curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg
+        installer -pkg swiftly.pkg -target CurrentUserHomeDirectory
+        rm swiftly.pkg
+        
+        # Add to PATH for current session
+        echo "$HOME/.swiftly/bin" >> $GITHUB_PATH
+        export PATH="$HOME/.swiftly/bin:$PATH"
 
-    - name: Build for x86_64 (Intel)
-      run: |
-        swift build -c release --arch x86_64
-        mkdir -p build/x86_64
-        cp .build/x86_64-apple-macosx/release/${{ env.PRODUCT_NAME }} build/x86_64/
+    - name: Build Linux binaries
+      run: ./scripts/build-linux.sh
 
-    - name: Create Universal Binary
-      run: |
-        mkdir -p build/universal
-        lipo -create -output build/universal/${{ env.PRODUCT_NAME }} \
-          build/arm64/${{ env.PRODUCT_NAME }} \
-          build/x86_64/${{ env.PRODUCT_NAME }}
+    - name: Clean build directory before macOS build
+      run: rm -rf .build
 
-    - name: Verify Universal Binary
-      run: |
-        file build/universal/${{ env.PRODUCT_NAME }}
-        lipo -info build/universal/${{ env.PRODUCT_NAME }}
+    - name: Build macOS binaries
+      run: ./scripts/build-macos.sh
 
-    - name: Create Archive
+    - name: Test Binaries
       run: |
-        cd build/universal
-        tar -czf ../../${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz ${{ env.PRODUCT_NAME }}
-        cd ../..
-
-    - name: Generate Checksums
-      run: |
-        cd build/universal
-        shasum -a 256 ${{ env.PRODUCT_NAME }} > ../../${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-checksums.txt
-        cd ../..
-        shasum -a 256 ${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz >> ${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-checksums.txt
-
-    - name: Test Binary
-      run: |
-        chmod +x build/universal/${{ env.PRODUCT_NAME }}
-        build/universal/${{ env.PRODUCT_NAME }} --version
-        build/universal/${{ env.PRODUCT_NAME }} --help
+        # Test macOS binary
+        chmod +x build/macos/universal/${{ env.PRODUCT_NAME }}
+        build/macos/universal/${{ env.PRODUCT_NAME }} --version
+        build/macos/universal/${{ env.PRODUCT_NAME }} --help
+        
+        # Test Linux binaries
+        chmod +x build/linux/x86_64/${{ env.PRODUCT_NAME }}
+        chmod +x build/linux/aarch64/${{ env.PRODUCT_NAME }}
 
     - name: Update Homebrew Formula
       run: |
-        # Get SHA256 of the archive for Homebrew formula
-        ARCHIVE_SHA256=$(shasum -a 256 ${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz | cut -d' ' -f1)
-
-        # Update Homebrew formula
-        sed -i '' "s|url \".*\"|url \"https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.version }}/${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz\"|" Formula/xcodeproj.rb
-        sed -i '' "s/sha256 \".*\"/sha256 \"$ARCHIVE_SHA256\"/" Formula/xcodeproj.rb
-
-        echo "Updated Formula with SHA256: $ARCHIVE_SHA256"
+        ./scripts/prepare-homebrew.sh "${{ steps.version.outputs.version }}" \
+          "build/macos/${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz"
 
     - name: Commit Formula Update
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add Formula/xcodeproj.rb
-        git commit -m "chore: update Formula for ${{ steps.version.outputs.version }}
-
-        - Update Homebrew formula URL and SHA256 hash
-        - Point to new release assets
-
-        🤖 Generated with [Claude Code](https://claude.ai/code)
-
-        Co-Authored-By: Claude <noreply@anthropic.com>" || echo "No changes to commit"
+        git commit -m "chore: update Formula for ${{ steps.version.outputs.version }}" || echo "No changes to commit"
         git push origin HEAD:main || echo "Failed to push changes"
 
-    - name: Create Release and Upload Assets
+    - name: Create Release and Upload All Assets
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
@@ -117,11 +92,14 @@ jobs:
           PRERELEASE_FLAG="--prerelease"
         fi
 
-        # Create release with assets
+        # Create release with all assets (macOS + Linux)
         gh release create "${{ steps.version.outputs.version }}" \
           --title "xcodeproj CLI ${{ steps.version.outputs.version }}" \
           --notes "" \
           $PRERELEASE_FLAG \
-          build/universal/${{ env.PRODUCT_NAME }} \
-          ${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz \
-          ${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-checksums.txt
+          build/macos/universal/${{ env.PRODUCT_NAME }} \
+          build/macos/${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-universal.tar.gz \
+          build/macos/${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-macos-checksums.txt \
+          build/linux/${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-linux-x86_64.tar.gz \
+          build/linux/${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-linux-aarch64.tar.gz \
+          build/linux/${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-linux-checksums.txt

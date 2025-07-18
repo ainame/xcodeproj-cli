@@ -10,3 +10,4 @@ tmp
 releases/
 *.d
 *.dia
+.vscode
