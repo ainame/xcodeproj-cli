@@ -47,7 +47,17 @@ By converting the functionality from an MCP server to a standalone CLI, we get t
 
 ## Installation
 
-### Homebrew
+### npm
+
+The quickest way to install xcodeproj-cli on any platform:
+
+```bash
+npm install -g @ainame/xcodeproj-cli
+```
+
+This works on both macOS and Linux. The binary will be automatically downloaded during installation.
+
+### Homebrew (macOS only)
 
 ```bash
 brew tap ainame/xcodeproj-cli https://github.com/ainame/xcodeproj-cli

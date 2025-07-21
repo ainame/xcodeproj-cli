@@ -1,0 +1,42 @@
+{
+  "name": "@ainame/xcodeproj-cli",
+  "version": "0.2.0",
+  "description": "Command-line tool for manipulating Xcode project files",
+  "keywords": [
+    "xcode",
+    "xcodeproj",
+    "ios",
+    "macos",
+    "swift",
+    "build",
+    "cli"
+  ],
+  "homepage": "https://github.com/ainame/xcodeproj-cli",
+  "bugs": {
+    "url": "https://github.com/ainame/xcodeproj-cli/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ainame/xcodeproj-cli.git"
+  },
+  "license": "MIT",
+  "author": "ainame",
+  "type": "module",
+  "bin": {
+    "xcodeproj": "./bin/xcodeproj.js"
+  },
+  "scripts": {
+    "postinstall": "node postinstall.js"
+  },
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

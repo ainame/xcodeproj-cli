@@ -103,3 +103,48 @@ jobs:
           build/linux/${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-linux-x86_64.tar.gz \
           build/linux/${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-linux-aarch64.tar.gz \
           build/linux/${{ env.PRODUCT_NAME }}-${{ steps.version.outputs.version }}-linux-checksums.txt
+  
+  publish-npm:
+    name: Publish to npm
+    needs: build-and-release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        # Fetch the latest to get any formula updates
+        fetch-depth: 0
+        
+    - name: Pull latest changes
+      run: |
+        git pull origin main || true
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        registry-url: 'https://registry.npmjs.org'
+        
+    - name: Get version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Build npm package
+      run: |
+        cd npm
+        # Ensure version is synchronized
+        npm version "${{ steps.version.outputs.version }}" --no-git-tag-version --allow-same-version
+        npm pack
+        
+    - name: Publish to npm
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      run: |
+        cd npm
+        npm publish "@ainame/xcodeproj-cli-${{ steps.version.outputs.version }}.tgz" --access public

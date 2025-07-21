@@ -1,0 +1,12 @@
+# Ignore everything except essential files
+*
+!package.json
+!README.md
+!LICENSE
+!bin/
+!bin/xcodeproj.js
+!postinstall.js
+!checksums.json
+
+# Don't include binaries in npm package (downloaded on install)
+binaries/
