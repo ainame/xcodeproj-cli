@@ -1,3 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+
+# Script to generate npm/README.md with npm-focused content
+# Keeps the npm README fresh while maintaining npm-specific messaging
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+NPM_README="$PROJECT_ROOT/npm/README.md"
+
+echo "Syncing npm README..."
+
+# Generate npm-focused README with current content
+cat > "$NPM_README" << 'EOF'
 # xcodeproj CLI
 
 A command-line tool for manipulating Xcode project files (.xcodeproj) using Swift. Perfect for automation, CI/CD pipelines, and AI coding assistants.
@@ -53,6 +67,10 @@ Perfect for CI/CD environments, Docker containers, and development machines.
 - `xcodeproj list-swift-packages` - List packages
 - `xcodeproj remove-swift-package` - Remove packages
 
+EOF
+
+# Add npm-specific content
+cat >> "$NPM_README" << 'EOF'
 
 ## Example Usage
 
@@ -109,3 +127,7 @@ xcodeproj set-build-setting MyApp.xcodeproj MyApp \
 ---
 
 Built with ❤️ using Swift and [XcodeProj](https://github.com/tuist/xcodeproj)
+EOF
+
+echo "✓ npm README synced successfully"
+echo "Generated: $NPM_README"

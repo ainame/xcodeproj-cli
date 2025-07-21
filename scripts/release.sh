@@ -39,6 +39,12 @@ if [ -f npm/package.json ]; then
     echo "Updated npm/package.json version to $VERSION"
 fi
 
+# Sync npm README from main README
+if [ -f scripts/sync-npm-readme.sh ]; then
+    echo "Syncing npm README..."
+    ./scripts/sync-npm-readme.sh
+fi
+
 # Build and test before committing
 echo "Building project..."
 swift build -c release
@@ -49,6 +55,9 @@ echo "Running tests..."
 git add Sources/xcodeproj-cli/Command.swift
 if [ -f npm/package.json ]; then
     git add npm/package.json
+fi
+if [ -f npm/README.md ]; then
+    git add npm/README.md
 fi
 git commit -m "chore: bump version to $VERSION"
 
