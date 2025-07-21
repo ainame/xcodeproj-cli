@@ -142,6 +142,12 @@ async function downloadBinary() {
     console.log('Extracting binary...');
     execSync(`tar -xzf "${archivePath}" -C "${binariesDir}"`, { stdio: 'inherit' });
     
+    // The extracted binary is named 'xcodeproj', but we need it to have the platform-specific name
+    const extractedBinaryPath = join(binariesDir, 'xcodeproj');
+    if (existsSync(extractedBinaryPath) && extractedBinaryPath !== binaryPath) {
+      execSync(`mv "${extractedBinaryPath}" "${binaryPath}"`, { stdio: 'inherit' });
+    }
+    
     // Clean up archive
     execSync(`rm "${archivePath}"`, { stdio: 'inherit' });
     
