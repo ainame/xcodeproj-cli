@@ -5,7 +5,7 @@ struct Command: ParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "xcodeproj",
         abstract: "A tool for manipulating Xcode project files",
-        version: "0.2.1",
+        version: "0.2.2",
         subcommands: [
             CreateCommand.self,
             ListTargetsCommand.self,
