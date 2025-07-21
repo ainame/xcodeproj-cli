@@ -135,16 +135,12 @@ jobs:
           echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
         fi
         
-    - name: Build npm package
-      run: |
-        cd npm
-        # Ensure version is synchronized
-        npm version "${{ steps.version.outputs.version }}" --no-git-tag-version --allow-same-version
-        npm pack
-        
-    - name: Publish to npm
+    - name: Build and publish npm package
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       run: |
         cd npm
-        npm publish "@ainame/xcodeproj-cli-${{ steps.version.outputs.version }}.tgz" --access public
+        # Ensure version is synchronized
+        npm version "${{ steps.version.outputs.version }}" --no-git-tag-version --allow-same-version
+        # Publish directly (no need to pack first)
+        npm publish --access public
