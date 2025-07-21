@@ -135,11 +135,15 @@ jobs:
           echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
         fi
         
-    - name: Build and publish npm package
+    - name: Publish npm package
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       run: |
-        # Ensure version is synchronized
-        npm version "${{ steps.version.outputs.version }}" --no-git-tag-version --allow-same-version
-        # Publish directly (no need to pack first)
-        npm publish --access public
+        # Check if version already exists on npm
+        VERSION="${{ steps.version.outputs.version }}"
+        if npm view "@ainame/xcodeproj-cli@$VERSION" version 2>/dev/null; then
+          echo "Version $VERSION already published to npm, skipping..."
+        else
+          echo "Publishing version $VERSION to npm..."
+          npm publish --access public
+        fi
