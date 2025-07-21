@@ -1,19 +1,47 @@
 # xcodeproj CLI
 
-A command-line tool for manipulating Xcode project files (.xcodeproj) using Swift. Perfect for automation, CI/CD pipelines, and AI coding assistants.
+A command-line tool for manipulating Xcode project files (.xcodeproj) using Swift. This tool provides comprehensive functionality to create, modify, and manage Xcode projects programmatically. This is especially handy when writing code with coding agent such as Claude Code, Gemini CLI, or Codex. Perfect for automation, CI/CD pipelines, and AI coding assistants.
 
 ## Quick Start
 
-```bash
-# Install globally
-npm install -g @ainame/xcodeproj-cli
 
-# Verify installation
-xcodeproj --version
+added 1 package in 33s
+0.2.1
+OVERVIEW: A tool for manipulating Xcode project files
 
-# Get help
-xcodeproj --help
-```
+USAGE: xcodeproj <subcommand>
+
+OPTIONS:
+  --version               Show the version.
+  -h, --help              Show help information.
+
+SUBCOMMANDS:
+  create                  Create a new Xcode project file (.xcodeproj)
+  list-targets            List all targets in an Xcode project
+  list-build-configurations
+                          List all build configurations in an Xcode project
+  list-files              List all files in a specific target of an Xcode
+                          project
+  get-build-settings      Get build settings for a specific target in an Xcode
+                          project
+  add-file                Add a file to an Xcode project
+  remove-file             Remove a file from the Xcode project
+  move-file               Move or rename a file within the project
+  create-group            Create a new group in the project navigator
+  add-target              Create a new target
+  remove-target           Remove an existing target
+  add-dependency          Add dependency between targets
+  set-build-setting       Modify build settings for a target
+  add-framework           Add framework dependencies
+  list-swift-packages     List all Swift Package dependencies in an Xcode
+                          project
+  add-swift-package       Add a Swift Package dependency to an Xcode project
+  remove-swift-package    Remove a Swift Package dependency from an Xcode
+                          project
+  add-build-phase         Add custom build phases
+  duplicate-target        Duplicate an existing target
+
+  See 'xcodeproj help <subcommand>' for detailed help.
 
 ## Platform Support
 
@@ -24,34 +52,36 @@ xcodeproj --help
 
 Perfect for CI/CD environments, Docker containers, and development machines.
 
-## Key Features
+## Features
 
-### 🏗️ Project Creation & Management
-- `xcodeproj create` - Create new Xcode projects
-- `xcodeproj list-targets` - List all targets
-- `xcodeproj list-files` - List files in targets
+### Core Operations
+- **create** - Create new Xcode projects with custom configuration
+- **list-targets** - List all targets in a project
+- **list-build-configurations** - List all build configurations
+- **list-files** - List files in specific targets
+- **get-build-settings** - Retrieve build settings for targets
 
-### 📁 File Management
-- `xcodeproj add-file` - Add files to projects
-- `xcodeproj remove-file` - Remove files
-- `xcodeproj move-file` - Move/rename files
-- `xcodeproj create-group` - Create groups
+### File Management
+- **add-file** - Add files to projects and targets
+- **remove-file** - Remove files from projects
+- **move-file** - Move or rename files within projects
+- **create-group** - Create groups in the project navigator
 
-### 🎯 Target Operations
-- `xcodeproj add-target` - Create new targets
-- `xcodeproj remove-target` - Remove targets
-- `xcodeproj duplicate-target` - Duplicate targets
-- `xcodeproj add-dependency` - Add dependencies
+### Target Management
+- **add-target** - Create new targets with various product types
+- **remove-target** - Remove existing targets
+- **duplicate-target** - Duplicate targets with all configurations
+- **add-dependency** - Add dependencies between targets
 
-### ⚙️ Build Configuration
-- `xcodeproj set-build-setting` - Modify build settings
-- `xcodeproj add-framework` - Add frameworks
-- `xcodeproj add-build-phase` - Add build phases
+### Build Configuration
+- **set-build-setting** - Modify build settings for targets
+- **add-framework** - Add system and custom framework dependencies
+- **add-build-phase** - Add custom run-script and copy-files build phases
 
-### 📦 Swift Package Management
-- `xcodeproj add-swift-package` - Add Swift packages
-- `xcodeproj list-swift-packages` - List packages
-- `xcodeproj remove-swift-package` - Remove packages
+### Swift Package Management
+- **list-swift-packages** - List all Swift Package dependencies
+- **add-swift-package** - Add Swift Package dependencies with version requirements
+- **remove-swift-package** - Remove Swift Package dependencies
 
 
 ## Example Usage

@@ -1,20 +1,32 @@
 #!/bin/bash
 set -euo pipefail
 
-# Script to generate npm/README.md with npm-focused content
-# Keeps the npm README fresh while maintaining npm-specific messaging
+# Script to sync npm/README.md from main README.md
+# Extracts relevant sections and adds npm-specific content
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+MAIN_README="$PROJECT_ROOT/README.md"
 NPM_README="$PROJECT_ROOT/npm/README.md"
 
-echo "Syncing npm README..."
+echo "Syncing npm README from main README..."
 
-# Generate npm-focused README with current content
-cat > "$NPM_README" << 'EOF'
+if [ ! -f "$MAIN_README" ]; then
+    echo "Error: Main README.md not found at $MAIN_README"
+    exit 1
+fi
+
+# Extract the main description (first few lines after title)
+DESCRIPTION=$(sed -n '3p' "$MAIN_README")
+
+# Extract the Features section (everything between ## Features and ## Installation)
+FEATURES_SECTION=$(awk '/^## Features$/,/^## Installation$/' "$MAIN_README" | sed '$d')
+
+# Generate npm-focused README
+cat > "$NPM_README" << EOF
 # xcodeproj CLI
 
-A command-line tool for manipulating Xcode project files (.xcodeproj) using Swift. Perfect for automation, CI/CD pipelines, and AI coding assistants.
+$DESCRIPTION Perfect for automation, CI/CD pipelines, and AI coding assistants.
 
 ## Quick Start
 
@@ -38,34 +50,7 @@ xcodeproj --help
 
 Perfect for CI/CD environments, Docker containers, and development machines.
 
-## Key Features
-
-### 🏗️ Project Creation & Management
-- `xcodeproj create` - Create new Xcode projects
-- `xcodeproj list-targets` - List all targets
-- `xcodeproj list-files` - List files in targets
-
-### 📁 File Management
-- `xcodeproj add-file` - Add files to projects
-- `xcodeproj remove-file` - Remove files
-- `xcodeproj move-file` - Move/rename files
-- `xcodeproj create-group` - Create groups
-
-### 🎯 Target Operations
-- `xcodeproj add-target` - Create new targets
-- `xcodeproj remove-target` - Remove targets
-- `xcodeproj duplicate-target` - Duplicate targets
-- `xcodeproj add-dependency` - Add dependencies
-
-### ⚙️ Build Configuration
-- `xcodeproj set-build-setting` - Modify build settings
-- `xcodeproj add-framework` - Add frameworks
-- `xcodeproj add-build-phase` - Add build phases
-
-### 📦 Swift Package Management
-- `xcodeproj add-swift-package` - Add Swift packages
-- `xcodeproj list-swift-packages` - List packages
-- `xcodeproj remove-swift-package` - Remove packages
+$FEATURES_SECTION
 
 EOF
 
