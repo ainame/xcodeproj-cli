@@ -184,30 +184,42 @@ scripts/test.sh
 ```
 
 #### Linux Compatibility Testing
-Run Linux compatibility tests in Docker:
+
+**On Linux (CI/CD or native Linux development):**
+```bash
+scripts/test-linux-native.sh
+```
+
+**On macOS/Windows (local development with Docker):**
 ```bash
 scripts/test-linux.sh
 ```
 
 #### Comprehensive Testing
-Run all tests (macOS + Linux):
+Run all tests (macOS + Linux) with automatic environment detection:
 ```bash
-# Run all tests
+# Run all tests (automatically chooses native or Docker-based Linux tests)
 scripts/test-all.sh
 
-# Skip Linux tests if Docker is unavailable
+# Skip Linux tests if needed
 scripts/test-all.sh --skip-linux
 ```
 
 **Prerequisites for Linux Testing:**
-- Docker installed and running
+- **Native Linux**: Node.js and npm installed
+- **Docker-based**: Docker installed and running
 - Network access for npm package installation
 
 The Linux tests verify full compatibility by:
-- Installing the published npm package in a Docker container
+- Installing the published npm package (natively on Linux, or in Docker container)
 - Testing all 19 CLI commands with real Xcode project manipulation
 - Validating Swift Package Manager integration
 - Ensuring proper error handling and output formatting
+
+**Environment-aware testing:**
+- On Linux: Uses native testing (no Docker overhead)
+- On macOS/Windows: Uses Docker-based testing
+- GitHub Actions: Uses efficient native Linux testing
 
 ### Release Process
 
@@ -226,10 +238,10 @@ The release script automatically:
 2. Updates version in `Command.swift` and `package.json`
 3. Builds the project in release mode
 4. Runs macOS tests (`scripts/test.sh`)
-5. Runs Linux compatibility tests (`scripts/test-linux.sh`) - unless skipped
+5. Runs Linux compatibility tests (environment-aware: native on Linux, Docker on macOS) - unless skipped
 6. Commits version changes
 7. Creates and pushes git tag
-8. Triggers GitHub Actions for binary builds and npm publishing
+8. Triggers GitHub Actions for binary builds, npm publishing, and post-publish Linux testing
 
 ## Contributing
 

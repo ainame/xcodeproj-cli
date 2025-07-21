@@ -65,7 +65,15 @@ echo "Running macOS tests..."
 
 if [ "$SKIP_LINUX" = false ]; then
     echo "Running Linux compatibility tests..."
-    ./scripts/test-linux.sh
+    
+    # Choose appropriate Linux test based on environment
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        echo "Using native Linux tests (detected Linux environment)"
+        ./scripts/test-linux-native.sh
+    else
+        echo "Using Docker-based Linux tests (detected non-Linux environment)"
+        ./scripts/test-linux.sh
+    fi
 else
     echo "Skipping Linux compatibility tests (--skip-linux flag provided)"
 fi

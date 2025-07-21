@@ -147,3 +147,73 @@ jobs:
           echo "Publishing version $VERSION to npm..."
           npm publish --access public
         fi
+
+  test-linux-after-publish:
+    name: Test Linux Compatibility (Post-Publish)
+    needs: publish-npm
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: Get version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Wait for npm package propagation
+      run: |
+        echo "Waiting for npm package to propagate..."
+        VERSION="${{ steps.version.outputs.version }}"
+        
+        # Wait up to 5 minutes for the package to be available
+        for i in {1..30}; do
+          if npm view "@ainame/xcodeproj-cli@$VERSION" version 2>/dev/null; then
+            echo "Package version $VERSION is now available on npm"
+            break
+          else
+            echo "Waiting for package to be available... (attempt $i/30)"
+            sleep 10
+          fi
+        done
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        registry-url: 'https://registry.npmjs.org'
+
+    - name: Run Native Linux Compatibility Tests
+      run: |
+        # Make scripts executable
+        chmod +x scripts/test-linux-native.sh
+        chmod +x scripts/test-core.sh
+        
+        # Run the native Linux compatibility tests (no Docker overhead)
+        ./scripts/test-linux-native.sh
+        
+    - name: Upload test results on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: linux-compatibility-test-failure
+        path: |
+          /tmp/xcodeproj-linux-test-*
+        retention-days: 7
+        
+    - name: Comment on failure
+      if: failure()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '❌ Linux compatibility tests failed after npm publish. Please check the logs and artifacts for details.'
+          })

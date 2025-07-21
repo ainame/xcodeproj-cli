@@ -54,7 +54,17 @@ fi
 
 if [ "$SKIP_LINUX" = false ]; then
     echo -e "${BLUE}🐧 Running Linux compatibility tests...${NC}"
-    if ./scripts/test-linux.sh; then
+    
+    # Choose appropriate Linux test based on environment
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        echo -e "${BLUE}📍 Running native Linux tests (detected Linux environment)${NC}"
+        LINUX_TEST_SCRIPT="./scripts/test-linux-native.sh"
+    else
+        echo -e "${BLUE}🐳 Running Docker-based Linux tests (detected non-Linux environment)${NC}"
+        LINUX_TEST_SCRIPT="./scripts/test-linux.sh"
+    fi
+    
+    if $LINUX_TEST_SCRIPT; then
         echo -e "${GREEN}✅ Linux compatibility tests passed${NC}"
         LINUX_RESULT=0
     else

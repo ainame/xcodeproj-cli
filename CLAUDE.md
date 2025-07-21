@@ -83,13 +83,14 @@ swift run xcodeproj --help
 
 ### Linux Compatibility Testing  
 ```bash
-# Run Linux tests in Docker
-./scripts/test-linux.sh
+# Run Linux tests (native on Linux, Docker on macOS)
+./scripts/test-linux-native.sh  # For native Linux environments
+./scripts/test-linux.sh         # For Docker-based testing
 
-# Run comprehensive testing (macOS + Linux)
+# Run comprehensive testing (macOS + Linux with auto-detection)
 ./scripts/test-all.sh
 
-# Skip Linux tests if Docker unavailable
+# Skip Linux tests if needed
 ./scripts/test-all.sh --skip-linux
 ```
 
