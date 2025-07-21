@@ -32,17 +32,11 @@ fi
 sed -i '' "s/version: \"[^\"]*\"/version: \"$VERSION\"/" Sources/xcodeproj-cli/Command.swift
 
 # Update version in npm package.json
-if [ -f npm/package.json ]; then
+if [ -f package.json ]; then
     # Use a temporary file for compatibility
     TMP_FILE=$(mktemp)
-    jq --arg version "$VERSION" '.version = $version' npm/package.json > "$TMP_FILE" && mv "$TMP_FILE" npm/package.json
-    echo "Updated npm/package.json version to $VERSION"
-fi
-
-# Sync npm README from main README
-if [ -f scripts/sync-npm-readme.sh ]; then
-    echo "Syncing npm README..."
-    ./scripts/sync-npm-readme.sh
+    jq --arg version "$VERSION" '.version = $version' package.json > "$TMP_FILE" && mv "$TMP_FILE" package.json
+    echo "Updated package.json version to $VERSION"
 fi
 
 # Build and test before committing
@@ -53,11 +47,8 @@ echo "Running tests..."
 
 # Commit version bump
 git add Sources/xcodeproj-cli/Command.swift
-if [ -f npm/package.json ]; then
-    git add npm/package.json
-fi
-if [ -f npm/README.md ]; then
-    git add npm/README.md
+if [ -f package.json ]; then
+    git add package.json
 fi
 git commit -m "chore: bump version to $VERSION"
 

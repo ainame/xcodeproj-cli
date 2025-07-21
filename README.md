@@ -49,13 +49,17 @@ By converting the functionality from an MCP server to a standalone CLI, we get t
 
 ### npm
 
-The quickest way to install xcodeproj-cli on any platform:
+Cross-platform installation for any environment:
 
 ```bash
 npm install -g @ainame/xcodeproj-cli
 ```
 
-This works on both macOS and Linux. The binary will be automatically downloaded during installation.
+**Supported platforms:**
+- **macOS**: Intel (x64) and Apple Silicon (arm64)  
+- **Linux**: x86_64 and aarch64 (ARM64)
+
+Perfect for CI/CD pipelines, Docker containers, AI coding assistants, and development machines. The appropriate binary is automatically downloaded during installation.
 
 ### Homebrew (macOS only)
 
