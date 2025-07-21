@@ -177,11 +177,59 @@ xcodeproj add-swift-package --help
 
 ### Testing
 
-Run test:
-
+#### macOS Testing
+Run local macOS tests:
 ```bash
 scripts/test.sh
 ```
+
+#### Linux Compatibility Testing
+Run Linux compatibility tests in Docker:
+```bash
+scripts/test-linux.sh
+```
+
+#### Comprehensive Testing
+Run all tests (macOS + Linux):
+```bash
+# Run all tests
+scripts/test-all.sh
+
+# Skip Linux tests if Docker is unavailable
+scripts/test-all.sh --skip-linux
+```
+
+**Prerequisites for Linux Testing:**
+- Docker installed and running
+- Network access for npm package installation
+
+The Linux tests verify full compatibility by:
+- Installing the published npm package in a Docker container
+- Testing all 19 CLI commands with real Xcode project manipulation
+- Validating Swift Package Manager integration
+- Ensuring proper error handling and output formatting
+
+### Release Process
+
+To release a new version:
+
+```bash
+# Release with full testing (macOS + Linux)
+scripts/release.sh 0.1.4
+
+# Release without Linux tests (if Docker unavailable)
+scripts/release.sh 0.1.4 --skip-linux
+```
+
+The release script automatically:
+1. Validates version format and git state
+2. Updates version in `Command.swift` and `package.json`
+3. Builds the project in release mode
+4. Runs macOS tests (`scripts/test.sh`)
+5. Runs Linux compatibility tests (`scripts/test-linux.sh`) - unless skipped
+6. Commits version changes
+7. Creates and pushes git tag
+8. Triggers GitHub Actions for binary builds and npm publishing
 
 ## Contributing
 

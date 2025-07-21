@@ -2,12 +2,29 @@
 set -euo pipefail
 
 if [ $# -eq 0 ]; then
-    echo "Usage: $0 <version>"
+    echo "Usage: $0 <version> [--skip-linux]"
     echo "Example: $0 0.1.3"
+    echo "Example: $0 0.1.3 --skip-linux  # Skip Linux compatibility tests"
     exit 1
 fi
 
 VERSION=$1
+SKIP_LINUX=false
+
+# Parse arguments
+shift
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --skip-linux)
+            SKIP_LINUX=true
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
 
 # Validate version format
 if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -42,8 +59,16 @@ fi
 # Build and test before committing
 echo "Building project..."
 swift build -c release
-echo "Running tests..."
+
+echo "Running macOS tests..."
 ./scripts/test.sh
+
+if [ "$SKIP_LINUX" = false ]; then
+    echo "Running Linux compatibility tests..."
+    ./scripts/test-linux.sh
+else
+    echo "Skipping Linux compatibility tests (--skip-linux flag provided)"
+fi
 
 # Commit version bump
 git add Sources/xcodeproj-cli/Command.swift

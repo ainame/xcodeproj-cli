@@ -74,10 +74,27 @@ swift run xcodeproj --help
 ```
 
 ## Testing
-```bash
-# Run test script
-./scripts/test.sh
 
+### macOS Testing
+```bash
+# Run local macOS tests
+./scripts/test.sh
+```
+
+### Linux Compatibility Testing  
+```bash
+# Run Linux tests in Docker
+./scripts/test-linux.sh
+
+# Run comprehensive testing (macOS + Linux)
+./scripts/test-all.sh
+
+# Skip Linux tests if Docker unavailable
+./scripts/test-all.sh --skip-linux
+```
+
+### Manual Testing
+```bash
 # Test individual commands
 ./TestDemo.xcodeproj
 xcodeproj list-targets TestDemo.xcodeproj
