@@ -38,20 +38,9 @@ echo -e "${GREEN}✅ Docker is available and running${NC}"
 VERSION=$(grep 'version:' Sources/xcodeproj-cli/Command.swift | sed 's/.*version: "\([^"]*\)".*/\1/')
 echo -e "${BLUE}📦 Testing version: ${VERSION}${NC}"
 
-# Create temporary directory for test
-TEST_DIR=$(mktemp -d)
-echo -e "${BLUE}📁 Test directory: ${TEST_DIR}${NC}"
-
-# Copy necessary files for testing
-cp -r . "$TEST_DIR/"
-cd "$TEST_DIR"
-
-# Ensure test scripts are executable
-chmod +x scripts/test-core.sh scripts/test-linux.sh scripts/test-linux-native.sh 2>/dev/null || true
-
 echo -e "${BLUE}🚀 Starting Linux compatibility test in Docker...${NC}"
 
-# Run Linux test in Docker using the core test script
+# Run Linux test in Docker using the core test script directly from current directory
 docker run --rm -v "$(pwd):/workspace" node:18-bullseye bash -c "
 set -euo pipefail
 cd /workspace
@@ -87,10 +76,6 @@ fi
 
 # Get exit code from Docker run
 DOCKER_EXIT_CODE=$?
-
-# Cleanup
-cd - > /dev/null
-rm -rf "$TEST_DIR"
 
 if [ $DOCKER_EXIT_CODE -eq 0 ]; then
     echo -e "${GREEN}✅ Docker-based Linux compatibility test completed successfully!${NC}"
