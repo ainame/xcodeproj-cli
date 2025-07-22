@@ -86,6 +86,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    # Cache all dependencies
     - name: Cache APT packages
       uses: actions/cache@v4
       with:
@@ -94,11 +95,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-apt-
 
-    - name: Install System Dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get -y install libcurl4-openssl-dev
-
     - name: Cache Swiftly Installation
       uses: actions/cache@v4
       with:
@@ -106,6 +102,29 @@ jobs:
         key: ${{ runner.os }}-swiftly-6.1.2
         restore-keys: |
           ${{ runner.os }}-swiftly-
+
+    - name: Cache Swift Static SDK
+      uses: actions/cache@v4
+      with:
+        path: ~/.swiftpm/swift-sdks
+        key: ${{ runner.os }}-swift-sdk-6.1.2-static-linux
+        restore-keys: |
+          ${{ runner.os }}-swift-sdk-6.1.2-
+          ${{ runner.os }}-swift-sdk-
+
+    - name: Cache Swift Dependencies
+      uses: actions/cache@v4
+      with:
+        path: .build
+        key: ${{ runner.os }}-swift-${{ hashFiles('Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-swift-
+
+    # Install dependencies
+    - name: Install System Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install libcurl4-openssl-dev
 
     - name: Install Swiftly and Swift Toolchain
       uses: vapor/swiftly-action@v0.2.0
@@ -117,15 +136,6 @@ jobs:
         echo "Verifying Swift installation..."
         which swift
         swift --version
-
-    - name: Cache Swift Static SDK
-      uses: actions/cache@v4
-      with:
-        path: ~/.swiftpm/swift-sdks
-        key: ${{ runner.os }}-swift-sdk-6.1.2-static-linux
-        restore-keys: |
-          ${{ runner.os }}-swift-sdk-6.1.2-
-          ${{ runner.os }}-swift-sdk-
 
     - name: Install Linux Static SDK
       run: |
@@ -140,14 +150,6 @@ jobs:
         
         echo "Available SDKs:"
         swift sdk list
-
-    - name: Cache Swift Dependencies
-      uses: actions/cache@v4
-      with:
-        path: .build
-        key: ${{ runner.os }}-swift-${{ hashFiles('Package.resolved') }}
-        restore-keys: |
-          ${{ runner.os }}-swift-
 
     - name: Run Native Linux Compatibility Tests
       run: |
