@@ -86,29 +86,19 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Install Swiftly
+    - name: Install Swiftly and Swift Toolchain
       uses: vapor/swiftly-action@v0.2.0
+      with:
+        toolchain: 6.1.2
     
-    - name: Install Swift Toolchain
+    - name: Verify Swift Installation
       run: |
-        echo "Available Swift versions..."
-        swiftly toolchain list-available | head -10 || echo "Failed to list available toolchains"
-        
-        echo "Installing Swift 6.1.2..."
-        swiftly install 6.1.2 || {
-          echo "Failed to install 6.1.2, trying 6.1-RELEASE..."
-          swiftly install 6.1-RELEASE || {
-            echo "Failed to install 6.1-RELEASE, trying latest..."
-            swiftly install latest
-          }
-        }
-        
-        echo "Activating Swift toolchain..."
-        swiftly use 6.1.2 || swiftly use 6.1-RELEASE || swiftly use latest
-        
         echo "Verifying Swift installation..."
         which swift
         swift --version
+        
+        echo "Available Swift toolchains:"
+        swiftly toolchain list
 
     - name: Cache Swift Dependencies
       uses: actions/cache@v4
