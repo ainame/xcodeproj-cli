@@ -101,9 +101,6 @@ jobs:
         echo "Verifying Swift installation..."
         which swift
         swift --version
-        
-        echo "Available Swift toolchains:"
-        swiftly toolchain list
 
     - name: Cache Swift Dependencies
       uses: actions/cache@v4
