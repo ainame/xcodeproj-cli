@@ -22,7 +22,7 @@ if (platform === 'darwin') {
   process.exit(1);
 }
 
-const binaryPath = join(__dirname, '..', '..', 'binaries', binaryName);
+const binaryPath = join(__dirname, '..', 'binaries', binaryName);
 
 if (!existsSync(binaryPath)) {
   console.error(`Error: xcodeproj binary not found at ${binaryPath}`);

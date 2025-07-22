@@ -17,17 +17,23 @@ NC='\033[0m' # No Color
 
 # Parse arguments
 SKIP_LINUX=false
+SKIP_NPM=false
 while [[ $# -gt 0 ]]; do
     case $1 in
         --skip-linux)
             SKIP_LINUX=true
             shift
             ;;
+        --skip-npm)
+            SKIP_NPM=true
+            shift
+            ;;
         --help|-h)
-            echo "Usage: $0 [--skip-linux]"
+            echo "Usage: $0 [--skip-linux] [--skip-npm]"
             echo ""
             echo "Options:"
             echo "  --skip-linux    Skip Linux compatibility tests"
+            echo "  --skip-npm      Skip npm distribution tests"
             echo "  --help, -h      Show this help message"
             exit 0
             ;;
@@ -42,6 +48,7 @@ done
 # Track test results
 MACOS_RESULT=0
 LINUX_RESULT=0
+NPM_RESULT=0
 
 echo -e "${BLUE}📱 Running macOS tests...${NC}"
 if ./scripts/test.sh; then
@@ -75,6 +82,20 @@ else
     echo -e "${YELLOW}⏭️  Skipping Linux compatibility tests${NC}"
 fi
 
+if [ "$SKIP_NPM" = false ]; then
+    echo -e "${BLUE}📦 Running npm distribution tests...${NC}"
+    
+    if ./scripts/test-npm.sh; then
+        echo -e "${GREEN}✅ npm distribution tests passed${NC}"
+        NPM_RESULT=0
+    else
+        echo -e "${RED}❌ npm distribution tests failed${NC}"
+        NPM_RESULT=1
+    fi
+else
+    echo -e "${YELLOW}⏭️  Skipping npm distribution tests${NC}"
+fi
+
 echo ""
 echo "🏁 Test Results Summary"
 echo "======================="
@@ -95,8 +116,18 @@ else
     echo -e "${YELLOW}⏭️  Linux tests: SKIPPED${NC}"
 fi
 
+if [ "$SKIP_NPM" = false ]; then
+    if [ $NPM_RESULT -eq 0 ]; then
+        echo -e "${GREEN}✅ npm tests: PASSED${NC}"
+    else
+        echo -e "${RED}❌ npm tests: FAILED${NC}"
+    fi
+else
+    echo -e "${YELLOW}⏭️  npm tests: SKIPPED${NC}"
+fi
+
 # Overall result
-OVERALL_RESULT=$((MACOS_RESULT + LINUX_RESULT))
+OVERALL_RESULT=$((MACOS_RESULT + LINUX_RESULT + NPM_RESULT))
 
 if [ $OVERALL_RESULT -eq 0 ]; then
     echo ""
