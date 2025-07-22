@@ -32,6 +32,18 @@ All 19 tools from the MCP server have been converted to CLI subcommands:
 - ✅ list-swift-packages
 - ✅ remove-swift-package
 
+## Installation
+
+### Via Homebrew (macOS/Linux)
+```bash
+brew install ainame/tap/xcodeproj
+```
+
+### Via npm (Cross-platform)
+```bash
+npm install -g @ainame/xcodeproj-cli
+```
+
 ## Release Process
 
 ### To release a new version:
@@ -42,17 +54,49 @@ All 19 tools from the MCP server have been converted to CLI subcommands:
 
 This script will:
 1. Validate version format and prerequisites
-2. Update version in `Sources/xcodeproj-cli/Command.swift`
+2. Update version in `Sources/xcodeproj-cli/Command.swift` and `package.json`
 3. Build and test the project
 4. Commit the version bump
 5. Create and push a git tag
 6. Trigger GitHub Actions to build and publish
 
 ### GitHub Actions automatically:
-1. Builds universal binary (arm64 + x86_64)
-2. Creates GitHub release with assets
-3. Updates Homebrew formula with new URL and SHA256
-4. Commits formula changes back to main
+1. Builds universal binary (arm64 + x86_64) for macOS
+2. Builds Linux binaries (x86_64 + aarch64)
+3. Creates GitHub release with assets
+4. Updates Homebrew formula with new URL and SHA256
+5. Publishes to npm registry
+6. Commits formula changes back to main
+
+## npm Distribution
+
+The project includes a complete npm distribution setup:
+
+### Structure
+```
+xcodeproj-cli/
+├── package.json          # npm package manifest (at root)
+├── npm/                  # npm-specific files
+│   ├── postinstall.js    # Downloads binary from GitHub releases
+│   └── wrapper.js        # JavaScript entry point
+└── .npmignore            # Excludes source code from npm package
+```
+
+### Components
+- **package.json**: Defines npm package as `@ainame/xcodeproj-cli`
+- **npm/wrapper.js**: JavaScript wrapper that detects platform/architecture
+- **npm/postinstall.js**: Downloads appropriate binary from GitHub releases after npm install
+- **.npmignore**: Excludes source code, only includes essential distribution files
+
+### How it works
+1. User runs `npm install -g @ainame/xcodeproj-cli`
+2. npm installs the lightweight package (no binaries included)
+3. Post-install script downloads the correct binary based on platform:
+   - macOS (x64/arm64): `xcodeproj-macos-universal`
+   - Linux x64: `xcodeproj-linux-x86_64`
+   - Linux arm64: `xcodeproj-linux-aarch64`
+4. Binary is verified via checksum and made executable
+5. JavaScript wrapper (`npm/wrapper.js`) acts as entry point
 
 ## Development Guidelines
 - Use ./tmp as workspace (gitignored)

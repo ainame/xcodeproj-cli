@@ -5,9 +5,8 @@
 !package.json
 !README.md
 !LICENSE
-!bin/
-!bin/xcodeproj.js
-!postinstall.js
+!npm/
+!npm/*.js
 
 # Don't include binaries in npm package (downloaded on install)
 binaries/

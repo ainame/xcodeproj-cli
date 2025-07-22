@@ -23,10 +23,10 @@
   "author": "ainame",
   "type": "module",
   "bin": {
-    "xcodeproj": "./bin/xcodeproj.js"
+    "xcodeproj": "./npm/wrapper.js"
   },
   "scripts": {
-    "postinstall": "node postinstall.js"
+    "postinstall": "node npm/postinstall.js"
   },
   "os": [
     "darwin",

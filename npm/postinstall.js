@@ -11,7 +11,7 @@ import https from 'https';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const REPO = 'ainame/xcodeproj-cli';
-const VERSION = JSON.parse(readFileSync(join(__dirname, 'package.json'), 'utf8')).version;
+const VERSION = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf8')).version;
 
 // Binary mappings
 const BINARY_MAPPINGS = {
@@ -74,7 +74,7 @@ async function downloadBinary() {
   const assetName = `xcodeproj-${VERSION}-${binaryVariant}.tar.gz`;
   
   // Create binaries directory
-  const binariesDir = join(__dirname, 'binaries');
+  const binariesDir = join(__dirname, '..', 'binaries');
   if (!existsSync(binariesDir)) {
     mkdirSync(binariesDir, { recursive: true });
   }
