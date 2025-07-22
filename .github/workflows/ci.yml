@@ -120,6 +120,10 @@ jobs:
         
         sudo apt-get update
         sudo apt-get -y install libcurl4-openssl-dev
+        
+        # Clean up lock files that cause caching issues
+        sudo rm -f /tmp/apt-cache/lock /tmp/apt-cache/partial/*
+        sudo chmod -R 755 /tmp/apt-cache
 
     - name: Install Swiftly and Swift Toolchain
       uses: vapor/swiftly-action@v0.2.0
