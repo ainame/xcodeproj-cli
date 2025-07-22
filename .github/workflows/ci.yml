@@ -86,6 +86,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Install System Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install libcurl4-openssl-dev
+
     - name: Install Swiftly and Swift Toolchain
       uses: vapor/swiftly-action@v0.2.0
       with:
