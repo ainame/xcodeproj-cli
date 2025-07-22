@@ -86,10 +86,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Install Swift
+    - name: Install Swiftly
       uses: vapor/swiftly-action@v0.2.0
-      with:
-        toolchain: '6.1-RELEASE'
+    
+    - name: Install Swift Toolchain
+      run: |
+        swiftly install 6.1-RELEASE
+        swiftly use 6.1-RELEASE
 
     - name: Cache Swift Dependencies
       uses: actions/cache@v4
@@ -114,5 +117,7 @@ jobs:
       with:
         name: linux-compatibility-test-logs
         path: |
-          /tmp/test-*
+          /tmp/tmp.*
+          *.log
+        if-no-files-found: ignore
         retention-days: 7
