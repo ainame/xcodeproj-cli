@@ -100,8 +100,24 @@ jobs:
           ${{ runner.os }}-deps-
 
     # Install dependencies
+    - name: Cache APT packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          /tmp/apt-cache
+        key: ${{ runner.os }}-apt-libcurl4-openssl-dev-${{ hashFiles('**/ci.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-apt-libcurl4-openssl-dev-
+
     - name: Install System Dependencies
       run: |
+        # Create cache directory
+        sudo mkdir -p /tmp/apt-cache
+        sudo chown -R runner:runner /tmp/apt-cache
+        
+        # Configure apt to use our cache directory
+        echo 'Dir::Cache::Archives "/tmp/apt-cache";' | sudo tee /etc/apt/apt.conf.d/01cache
+        
         sudo apt-get update
         sudo apt-get -y install libcurl4-openssl-dev
 
