@@ -91,7 +91,6 @@ jobs:
       uses: actions/cache@v4
       with:
         path: |
-          /var/cache/apt/archives
           ~/.local/share/swiftly
           ~/.swiftpm/swift-sdks
           .build
