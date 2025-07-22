@@ -115,11 +115,20 @@ jobs:
         sudo mkdir -p /tmp/apt-cache
         sudo chown -R runner:runner /tmp/apt-cache
         
-        # Configure apt to use our cache directory
+        # Configure apt to use our cache directory and skip unnecessary processing
         echo 'Dir::Cache::Archives "/tmp/apt-cache";' | sudo tee /etc/apt/apt.conf.d/01cache
+        echo 'DPkg::Post-Invoke-Success::"/bin/rm -f /var/lib/apt/lists/lock; /bin/rm -f /var/cache/apt/archives/lock; /bin/rm -f /var/lib/dpkg/lock*"' | sudo tee -a /etc/apt/apt.conf.d/01cache
+        echo 'APT::Install-Recommends "false";' | sudo tee -a /etc/apt/apt.conf.d/01cache
+        echo 'APT::Install-Suggests "false";' | sudo tee -a /etc/apt/apt.conf.d/01cache
         
+        # Disable man-db triggers to speed up installation
+        sudo bash -c 'echo "path-exclude /usr/share/man/*" >> /etc/dpkg/dpkg.cfg.d/01_nodoc'
+        sudo bash -c 'echo "path-exclude /usr/share/locale/*" >> /etc/dpkg/dpkg.cfg.d/01_nodoc'
+        sudo bash -c 'echo "path-exclude /usr/share/doc/*" >> /etc/dpkg/dpkg.cfg.d/01_nodoc'
+        
+        export DEBIAN_FRONTEND=noninteractive
         sudo apt-get update
-        sudo apt-get -y install libcurl4-openssl-dev
+        sudo apt-get -y install --no-install-recommends libcurl4-openssl-dev
         
         # Clean up lock files that cause caching issues
         sudo rm -f /tmp/apt-cache/lock /tmp/apt-cache/partial/*
