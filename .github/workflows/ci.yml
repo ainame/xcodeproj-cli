@@ -91,8 +91,24 @@ jobs:
     
     - name: Install Swift Toolchain
       run: |
-        swiftly install 6.1-RELEASE
-        swiftly use 6.1-RELEASE
+        echo "Available Swift versions..."
+        swiftly toolchain list-available | head -10 || echo "Failed to list available toolchains"
+        
+        echo "Installing Swift 6.0-RELEASE..."
+        swiftly install 6.0-RELEASE || {
+          echo "Failed to install 6.0-RELEASE, trying 5.10..."
+          swiftly install 5.10-RELEASE || {
+            echo "Failed to install 5.10-RELEASE, trying latest..."
+            swiftly install latest
+          }
+        }
+        
+        echo "Activating Swift toolchain..."
+        swiftly use 6.0-RELEASE || swiftly use 5.10-RELEASE || swiftly use latest
+        
+        echo "Verifying Swift installation..."
+        which swift
+        swift --version
 
     - name: Cache Swift Dependencies
       uses: actions/cache@v4
@@ -107,6 +123,12 @@ jobs:
         # Make scripts executable
         chmod +x scripts/test-linux-native.sh
         chmod +x scripts/test-core.sh
+        
+        # Debug environment
+        echo "Environment check:"
+        echo "OS: $OSTYPE"
+        echo "PWD: $(pwd)"
+        echo "Swift path: $(which swift)"
         
         # Run the native Linux compatibility tests (builds and tests actual code)
         ./scripts/test-linux-native.sh
