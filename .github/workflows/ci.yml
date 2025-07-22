@@ -116,10 +116,11 @@ jobs:
         sudo chown -R runner:runner /tmp/apt-cache
         
         # Configure apt to use our cache directory and skip unnecessary processing
-        echo 'Dir::Cache::Archives "/tmp/apt-cache";' | sudo tee /etc/apt/apt.conf.d/01cache
-        echo 'DPkg::Post-Invoke-Success::"/bin/rm -f /var/lib/apt/lists/lock; /bin/rm -f /var/cache/apt/archives/lock; /bin/rm -f /var/lib/dpkg/lock*"' | sudo tee -a /etc/apt/apt.conf.d/01cache
-        echo 'APT::Install-Recommends "false";' | sudo tee -a /etc/apt/apt.conf.d/01cache
-        echo 'APT::Install-Suggests "false";' | sudo tee -a /etc/apt/apt.conf.d/01cache
+        sudo tee /etc/apt/apt.conf.d/01cache << 'EOF'
+Dir::Cache::Archives "/tmp/apt-cache";
+APT::Install-Recommends "false";
+APT::Install-Suggests "false";
+EOF
         
         # Disable man-db triggers to speed up installation
         sudo bash -c 'echo "path-exclude /usr/share/man/*" >> /etc/dpkg/dpkg.cfg.d/01_nodoc'
