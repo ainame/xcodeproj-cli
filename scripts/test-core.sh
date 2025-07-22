@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Core xcodeproj-cli compatibility test script
-# This script contains the actual test logic and assumes xcodeproj CLI is already installed
+# Core "$XCODEPROJ_CLI"-cli compatibility test script
+# This script contains the actual test logic and assumes "$XCODEPROJ_CLI" CLI is already installed
 # Can be run on any platform where the CLI is available in PATH
 
 set -euo pipefail
@@ -15,16 +15,19 @@ NC='\033[0m' # No Color
 
 echo -e "${BLUE}🧪 Running xcodeproj-cli core compatibility tests${NC}"
 
+# Use provided executable path or fallback to PATH
+XCODEPROJ_CLI="${XCODEPROJ_EXECUTABLE:-xcodeproj}"
+
 # Check if xcodeproj is available
-if ! command -v xcodeproj &> /dev/null; then
-    echo -e "${RED}❌ xcodeproj CLI not found in PATH${NC}"
-    echo "Please ensure xcodeproj is installed and available in PATH"
+if ! command -v "$XCODEPROJ_CLI" &> /dev/null; then
+    echo -e "${RED}❌ xcodeproj CLI not found at: ${XCODEPROJ_CLI}${NC}"
+    echo "Please ensure xcodeproj is installed and available"
     exit 1
 fi
 
 # Get and display version
-VERSION=$(xcodeproj --version)
-echo -e "${BLUE}📦 Testing xcodeproj CLI version: ${VERSION}${NC}"
+VERSION=$("$XCODEPROJ_CLI" --version)
+echo -e "${BLUE}📦 Testing "$XCODEPROJ_CLI" CLI version: ${VERSION}${NC}"
 
 # Create temporary directory for tests
 TEST_DIR=$(mktemp -d)
@@ -46,13 +49,13 @@ run_test() {
 }
 
 # Test 1: Create project
-run_test "Project creation" "xcodeproj create TestApp --bundle-identifier com.test.app"
+run_test "Project creation" "\"$XCODEPROJ_CLI\" create TestApp --bundle-identifier com.test.app"
 
 # Test 2: Target management
-run_test "Add target with all parameters" "xcodeproj add-target TestApp.xcodeproj TestFramework framework com.test.framework --platform iOS --deployment-target 15.0"
+run_test "Add target with all parameters" "\"$XCODEPROJ_CLI\" add-target TestApp.xcodeproj TestFramework framework com.test.framework --platform iOS --deployment-target 15.0"
 
 # Verify targets were created
-TARGETS=$(xcodeproj list-targets TestApp.xcodeproj)
+TARGETS=$("$XCODEPROJ_CLI" list-targets TestApp.xcodeproj)
 echo -e "${BLUE}📋 Targets found:${NC}"
 echo "$TARGETS"
 if [[ "$TARGETS" == *"TestApp"* ]] && [[ "$TARGETS" == *"TestFramework"* ]]; then
@@ -63,10 +66,10 @@ else
 fi
 
 # Test 3: Swift Package Manager (with correct positional arguments)
-run_test "Add Swift package" "xcodeproj add-swift-package TestApp.xcodeproj https://github.com/apple/swift-argument-parser \"from: 1.0.0\" --target-name TestApp --product-name ArgumentParser"
+run_test "Add Swift package" "\"$XCODEPROJ_CLI\" add-swift-package TestApp.xcodeproj https://github.com/apple/swift-argument-parser \"from: 1.0.0\" --target-name TestApp --product-name ArgumentParser"
 
 # Verify package was added
-PACKAGES=$(xcodeproj list-swift-packages TestApp.xcodeproj)
+PACKAGES=$("$XCODEPROJ_CLI" list-swift-packages TestApp.xcodeproj)
 echo -e "${BLUE}📦 Swift packages found:${NC}"
 echo "$PACKAGES"
 if [[ "$PACKAGES" == *"swift-argument-parser"* ]]; then
@@ -77,19 +80,19 @@ else
 fi
 
 # Test 4: Build phases (with subcommand structure)
-run_test "Add run script build phase" "xcodeproj add-build-phase run-script TestApp.xcodeproj TestApp \"Test Script\" \"echo 'Build phase test successful'\""
+run_test "Add run script build phase" "\"$XCODEPROJ_CLI\" add-build-phase run-script TestApp.xcodeproj TestApp \"Test Script\" \"echo 'Build phase test successful'\""
 
 # Test 5: File management
 echo -e "${YELLOW}🔧 File management tests${NC}"
 echo 'test content for compatibility' > test-file.txt
-run_test "Add file to project" "xcodeproj add-file TestApp.xcodeproj test-file.txt --target-name TestApp"
-run_test "Add copy files build phase" "xcodeproj add-build-phase copy-files TestApp.xcodeproj TestApp \"Copy Test Resources\" resources --files test-file.txt"
+run_test "Add file to project" "\"$XCODEPROJ_CLI\" add-file TestApp.xcodeproj test-file.txt --target-name TestApp"
+run_test "Add copy files build phase" "\"$XCODEPROJ_CLI\" add-build-phase copy-files TestApp.xcodeproj TestApp \"Copy Test Resources\" resources --files test-file.txt"
 
 # Test 6: Build settings
-run_test "Set build setting" "xcodeproj set-build-setting TestApp.xcodeproj TestApp SWIFT_VERSION 5.9 --configuration Debug"
+run_test "Set build setting" "\"$XCODEPROJ_CLI\" set-build-setting TestApp.xcodeproj TestApp SWIFT_VERSION 5.9 --configuration Debug"
 
 # Verify build setting was set
-SETTINGS=$(xcodeproj get-build-settings TestApp.xcodeproj TestApp --configuration Debug)
+SETTINGS=$("$XCODEPROJ_CLI" get-build-settings TestApp.xcodeproj TestApp --configuration Debug)
 if [[ "$SETTINGS" == *"SWIFT_VERSION"* ]] && [[ "$SETTINGS" == *"5.9"* ]]; then
     echo -e "${GREEN}✅ Build settings management successful${NC}"
 else
@@ -99,10 +102,10 @@ fi
 
 # Test 7: Additional file operations
 echo 'additional test content' > another-file.swift
-run_test "Add Swift file" "xcodeproj add-file TestApp.xcodeproj another-file.swift --target-name TestApp"
+run_test "Add Swift file" "\"$XCODEPROJ_CLI\" add-file TestApp.xcodeproj another-file.swift --target-name TestApp"
 
 # List files to verify
-FILES=$(xcodeproj list-files TestApp.xcodeproj TestApp)
+FILES=$("$XCODEPROJ_CLI" list-files TestApp.xcodeproj TestApp)
 echo -e "${BLUE}📄 Files in target:${NC}"
 echo "$FILES"
 if [[ "$FILES" == *"another-file.swift"* ]]; then
@@ -113,7 +116,7 @@ else
 fi
 
 # Test 8: Build configurations
-CONFIGS=$(xcodeproj list-build-configurations TestApp.xcodeproj)
+CONFIGS=$("$XCODEPROJ_CLI" list-build-configurations TestApp.xcodeproj)
 echo -e "${BLUE}⚙️  Build configurations:${NC}"
 echo "$CONFIGS"
 if [[ "$CONFIGS" == *"Debug"* ]] && [[ "$CONFIGS" == *"Release"* ]]; then

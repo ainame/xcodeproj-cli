@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Native Linux compatibility test script for GitHub Actions
-# Runs directly on Linux without Docker overhead
+# Builds and tests the actual Swift code on Linux without Docker overhead
 
 set -euo pipefail
 
-echo "🐧 Testing xcodeproj-cli on Native Linux"
-echo "======================================="
+echo "🐧 Building and Testing xcodeproj-cli on Native Linux"
+echo "===================================================="
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -22,32 +22,65 @@ if [[ "$OSTYPE" != "linux-gnu"* ]]; then
     exit 1
 fi
 
-# Check if Node.js is available
-if ! command -v npm &> /dev/null; then
-    echo -e "${RED}❌ npm is not installed${NC}"
-    echo "Please install Node.js and npm"
+# Check if Swift is available
+if ! command -v swift &> /dev/null; then
+    echo -e "${RED}❌ Swift is not installed${NC}"
+    echo "Please install Swift for Linux"
     exit 1
 fi
 
-echo -e "${BLUE}🔍 Installing xcodeproj-cli from npm...${NC}"
+echo -e "${BLUE}📋 Swift version information:${NC}"
+swift --version
 
-# Install the CLI globally
-npm install -g @ainame/xcodeproj-cli
+echo -e "${BLUE}🔨 Building xcodeproj-cli from source...${NC}"
 
-# Verify installation
-if command -v xcodeproj &> /dev/null; then
-    echo -e "${GREEN}✅ xcodeproj-cli installed successfully${NC}"
-    INSTALLED_VERSION=$(xcodeproj --version)
-    echo -e "${BLUE}📦 Installed version: ${INSTALLED_VERSION}${NC}"
-else
-    echo -e "${RED}❌ xcodeproj-cli installation failed${NC}"
+# Build debug version first to catch any build issues
+echo -e "${YELLOW}Building debug version...${NC}"
+if ! swift build -v; then
+    echo -e "${RED}❌ Debug build failed${NC}"
     exit 1
 fi
+
+# Build release version for testing
+echo -e "${YELLOW}Building release version...${NC}"
+if ! swift build -c release -v; then
+    echo -e "${RED}❌ Release build failed${NC}"
+    exit 1
+fi
+
+# Verify the executable was created
+EXECUTABLE_PATH=".build/release/xcodeproj"
+if [[ ! -f "$EXECUTABLE_PATH" ]]; then
+    echo -e "${RED}❌ Executable not found at $EXECUTABLE_PATH${NC}"
+    exit 1
+fi
+
+# Make executable and test basic functionality
+chmod +x "$EXECUTABLE_PATH"
+
+echo -e "${GREEN}✅ xcodeproj-cli built successfully${NC}"
+
+# Test basic commands
+echo -e "${BLUE}🧪 Testing basic commands...${NC}"
+
+# Test version command
+echo -e "${YELLOW}Testing --version...${NC}"
+BUILT_VERSION=$("$EXECUTABLE_PATH" --version)
+echo -e "${BLUE}📦 Built version: ${BUILT_VERSION}${NC}"
+
+# Test help command
+echo -e "${YELLOW}Testing --help...${NC}"
+"$EXECUTABLE_PATH" --help > /dev/null
+
+echo -e "${GREEN}✅ Basic commands work correctly${NC}"
 
 echo -e "${BLUE}🚀 Running core compatibility tests...${NC}"
 
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Export the executable path for test-core.sh to use
+export XCODEPROJ_EXECUTABLE="$(pwd)/$EXECUTABLE_PATH"
 
 # Run the core test script
 if "$SCRIPT_DIR/test-core.sh"; then
