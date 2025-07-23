@@ -16,13 +16,13 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
     - name: Setup Xcode
       run: sudo xcode-select -s /Applications/Xcode_16.4.app/Contents/Developer
 
     - name: Cache Swift Dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
       with:
         path: .build
         key: ${{ runner.os }}-swift-${{ hashFiles('Package.resolved') }}
@@ -63,7 +63,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
     - name: Setup Xcode
       run: sudo xcode-select -s /Applications/Xcode_16.4.app/Contents/Developer
@@ -84,11 +84,11 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
     # Cache all dependencies
     - name: Cache Dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
       with:
         path: |
           ~/.local/share/swiftly
@@ -101,7 +101,7 @@ jobs:
 
     # Install dependencies
     - name: Cache APT packages
-      uses: actions/cache@v4
+      uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
       with:
         path: |
           /tmp/apt-cache
@@ -136,7 +136,7 @@ jobs:
         sudo chmod -R 755 /tmp/apt-cache
 
     - name: Install Swiftly and Swift Toolchain
-      uses: vapor/swiftly-action@v0.2.0
+      uses: vapor/swiftly-action@afdde2275f2b916c2704383f3a6b72032adb488c # v0.2.0
       with:
         toolchain: 6.1.2
     
@@ -177,7 +177,7 @@ jobs:
 
     - name: Upload test artifacts on failure
       if: failure()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
         name: linux-compatibility-test-logs
         path: |
