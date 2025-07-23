@@ -24,7 +24,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
     - name: Setup Xcode
       run: sudo xcode-select -s /Applications/Xcode_16.4.app/Contents/Developer
@@ -111,7 +111,7 @@ jobs:
     
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
         # Fetch the latest to get any formula updates
         fetch-depth: 0
@@ -121,7 +121,7 @@ jobs:
         git pull origin main || true
         
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
       with:
         node-version: '20'
         registry-url: 'https://registry.npmjs.org'
@@ -155,7 +155,7 @@ jobs:
     
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       
     - name: Get version
       id: version
@@ -183,7 +183,7 @@ jobs:
         done
 
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
       with:
         node-version: '20'
         registry-url: 'https://registry.npmjs.org'
@@ -199,7 +199,7 @@ jobs:
         
     - name: Upload test results on failure
       if: failure()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
       with:
         name: linux-compatibility-test-failure
         path: |
@@ -208,7 +208,7 @@ jobs:
         
     - name: Comment on failure
       if: failure()
-      uses: actions/github-script@v7
+      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
       with:
         script: |
           github.rest.issues.createComment({
