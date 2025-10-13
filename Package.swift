@@ -11,7 +11,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/ainame/XcodeProj.git", revision: "6f31e2d9"),
-        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.6.1")
+        .package(url: "https://github.com/apple/swift-argument-parser", from: "1.6.2")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
